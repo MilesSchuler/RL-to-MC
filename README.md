@@ -1,4 +1,4 @@
-# RL-to-MC
+# Real Life to Minecraft
 This project is designed to convert 3D files to Minecraft structures
 
 Currently in progress, progress updates below:
