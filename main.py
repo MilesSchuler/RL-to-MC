@@ -1,10 +1,23 @@
 from Point import Point
-from ObjReaderV1 import OBJReader
+from ObjReaderV1 import OBJ
+from BasicConverter import BasicConverter
+from NBTMaker import NBTMaker
 
 # example using new Point class
 testPoint = Point(1.0, 1.5, 2.0)
 testPoint.printLocation()
 
-objReader = OBJReader
-# i dont know if the dwayne.obj is the right thing to pass
-objReader.readOBJ("dwayne.obj")
+model = OBJ("dwayne.obj")
+
+v = model.getVertices()
+t = model.getTextures()
+f = model.getFaces()
+
+converter = BasicConverter
+
+blocks = converter.convertModel(v, t, f)
+
+creator = NBTMaker
+
+structureFile = creator.makeNBT(blocks)
+

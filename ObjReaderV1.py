@@ -1,13 +1,11 @@
 from tokenize import String
 
 
-class OBJReader:
+class OBJ:
     # Reads obj file as text document and organizes the contents
-    # into vertices, textures, and faces
-    #
-    def readOBJ(filename: String):
-        filename = "dwayne.obj"  
-        path = "C:/Users/MilesL25/.spyder-py3/3D Files/" + filename
+    # into self.vertices, self.textures, and self.faces
+    
+    def __init__(self, path):
         file = open(path)
         data = []
         num = 0
@@ -16,9 +14,9 @@ class OBJReader:
             num += 1
 
 
-        vertices = []
-        textures = []
-        faces = []
+        self.vertices = []
+        self.textures = []
+        self.faces = []
         # Each line can start with one of these
         # or a '#' to mean comment, or other random stuff
         possible_starts = ['v', 'vp', 'vn', 'vt', 'f', 'l']
@@ -37,12 +35,12 @@ class OBJReader:
             # vertex (v x y z)
             if data_type == 'v':
                 coords = [float(i) for i in nums[1:]]
-                vertices.append(coords)
-            # texture (maps material to vertices, I think)
+                self.vertices.append(coords)
+            # texture (maps material to self.vertices, I think)
             # (vt u v w), v and w are optional
             elif data_type == 'vt':
                 texture = [float(i) for i in nums[1:]]
-                textures.append(texture)
+                self.textures.append(texture)
             # face (f v1/vt1 v2/vt2 v3/vt3)
             # can have more than 3, vts are optional and can include
             # vn, which is a normal vector
@@ -54,28 +52,37 @@ class OBJReader:
                     p = points[i]
                     info = p.split("/")
                     points[i] = [int(i) for i in info]
-                faces.append(points)
+                self.faces.append(points)
 
-        # Now we have the three lists. The material of the faces, 
+        # Now we have the three lists. The material of the self.faces, 
         # which has color, transparency, shininess, secondary color, etc
         # is in the material.lib file which has a similar formatting
         # but I gtg so I don't have time to parse it.
 
-        # other miles here, we need it to return something probably
-
-        xmax = max([v[0] for v in vertices])
-        xmin = min([v[0] for v in vertices])
-        ymax = max([v[1] for v in vertices])
-        ymin = min([v[1] for v in vertices])
-        zmax = max([v[2] for v in vertices])
-        zmin = min([v[2] for v in vertices])
-
+        """
+        xmax = max([v[0] for v in self.vertices])
+        xmin = min([v[0] for v in self.vertices])
+        ymax = max([v[1] for v in self.vertices])
+        ymin = min([v[1] for v in self.vertices])
+        zmax = max([v[2] for v in self.vertices])
+        zmin = min([v[2] for v in self.vertices])
 
 
-        print("Vertices: ", len(vertices))
-        print("Textures: ", len(textures))
-        print("Faces: ", len(faces))
+
+        print("self.vertices: ", len(self.vertices))
+        print("self.textures: ", len(self.textures))
+        print("self.faces: ", len(self.faces))
         print("X range: ", xmin, "-", xmax)
         print("Y range: ", ymin, "-", ymax)
         print("Z range: ", zmin, "-", zmax)
+        """
         file.close()
+        
+    def getVertices(self):
+        return self.vertices
+    
+    def getTextures(self):
+        return self.textures
+    
+    def getFaces(self):
+        return self.faces
