@@ -1,5 +1,5 @@
 from Point import Point
-from ObjReaderV1 import OBJ
+from ObjReader import OBJ
 from BasicConverter import BasicConverter
 from NBTMaker import NBTMaker
 
