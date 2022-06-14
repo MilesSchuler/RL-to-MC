@@ -9,4 +9,4 @@ Currently in progress, progress updates below:
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
-*Disclaimer: This program and its creators are not endorsed by, directly affiliated with, maintained, authorized, or sponsored by Mojang or Minecraft. All product and company names are the registered trademarks of their original owners. The use of any trade name or trademark is for identification and reference purposes only and does not imply any association with the trademark holder of their product brand.*
+*Disclaimer: This program and its creators are not endorsed by, directly affiliated with, maintained, authorized, or sponsored by Mojang Studios or Minecraft. All product and company names are the registered trademarks of their original owners. The use of any trade name or trademark is for identification and reference purposes only and does not imply any association with the trademark holder of their product brand.*
