@@ -4,8 +4,10 @@ This project is designed to convert 3D files to Minecraft structures
 Currently in progress, progress updates below:
 
 - 6/10/22: basic file parser
-- 6/12/22: implemented Point class
-
+- 6/12/22: implemented **Point** class
+- 6/14/22: created basic converter
+  - inputs: vertices of obj file, intended height in Minecraft blocks
+  - outputs: 3d scaled array **blocks** with blocks[x, y, z] = 1 if a vertex is present in the corresponding block and 0 if no vertex is present      
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
