@@ -6,14 +6,12 @@ class OBJ:
     # Reads obj file as text document and organizes the contents
     # into self.vertices, self.textures, and self.faces
     
-    def __init__(self, path):
-        file = open(path)
-        data = []
-        num = 0
-        for line in file:
-            data.append(line)
-            num += 1
-
+    def __init__(self, name):
+        # name is the name of the folder and the obj file, so path is
+        # bird/bird.obj, for example
+        path = name + "/"
+        filename = name + ".obj"
+        file = open(path + filename)
 
         self.vertices = []
         self.textures = []
@@ -21,7 +19,7 @@ class OBJ:
         # Each line can start with one of these
         # or a '#' to mean comment, or other random stuff
         possible_starts = ['v', 'vp', 'vn', 'vt', 'f', 'l']
-        for line in data:
+        for line in file:
             # remove new lines at end of lines
             if '\n' in line:
                 line = line[:-1]
@@ -30,22 +28,27 @@ class OBJ:
             # some lines are empty just for formatting
             if len(nums) <= 1:
                 continue
+            
+            # sometimes there are extra spaces, whicih lead to empty strings in the list
+            nums = [num for num in nums if num != ""]
+
             # character(s) at the beginning of the line tell us 
             # what the line is
-            data_type = nums[0]
+            dataType = nums[0]
+
             # vertex (v x y z)
-            if data_type == 'v':
+            if dataType == 'v':
                 coords = [float(i) for i in nums[1:]]
                 self.vertices.append(coords)
             # texture (maps material to self.vertices, I think)
             # (vt u v w), v and w are optional
-            elif data_type == 'vt':
+            elif dataType == 'vt':
                 texture = [float(i) for i in nums[1:]]
                 self.textures.append(texture)
             # face (f v1/vt1 v2/vt2 v3/vt3)
             # can have more than 3, vts are optional and can include
             # vn, which is a normal vector
-            elif data_type == 'f':
+            elif dataType == 'f':
                 points = nums[1:]
                 # this splits up each point in the face into the vertex
                 # and the vertex texture
@@ -55,28 +58,57 @@ class OBJ:
                     points[i] = [int(i) for i in info]
                 self.faces.append(points)
 
-        # Now we have the three lists. The material of the self.faces, 
-        # which has color, transparency, shininess, secondary color, etc
-        # is in the material.lib file which has a similar formatting
-        # but I gtg so I don't have time to parse it.
+            # material library information, stored in a separate file and
+            # tells the obj file what the texture and color is
+            elif dataType == "mtllib":
+                # file name comes right after the string mtllib in that line
+                mtlFile = line[len("mtllib "):]
+                material = open(path + mtlFile)
 
-        """
-        xmax = max([v[0] for v in self.vertices])
-        xmin = min([v[0] for v in self.vertices])
-        ymax = max([v[1] for v in self.vertices])
-        ymin = min([v[1] for v in self.vertices])
-        zmax = max([v[2] for v in self.vertices])
-        zmin = min([v[2] for v in self.vertices])
+                # file can contain multiple different materials
+                self.mtlDicts = []
+                mtlData = []
+                for mtlLine in material:
+                    # if its not a comment
+                    if mtlLine[0] != '#':
+                        if "\t" in mtlLine:
+                            mtlLine = mtlLine[1:]
+                        if "\n" in mtlLine:
+                            mtlLine = mtlLine[:-1]
+                        if mtlLine != "":
+                            mtlData.append(mtlLine)
+                
+                # loop through each line
+                first = True
+                curMtl = {}
+                for mtlLine in mtlData:
+                    info = mtlLine.split(" ")
+                    # take out empty strings
+                    info = [i for i in info if i != ""]
+                    # new materials are defined with lines like this: newmtl MaterialName
+                    if info[0] == "newmtl":
+                        # if this is the start of material number 2, add material 1 to the list
+                        if first:
+                            first = False
+                        else:
+                            self.mtlDicts.append(curMtl)
+                        
+                        # add the name to the dict
+                        curMtl["name"] = info[1]
 
+                    # other lines give various material information, with a format similar to obj,
+                    # e.g. Kd 1.0 1.0 1.0
+                    else:
+                        # maps will have strings, others will have floats
+                        if mtlLine[:3] == "map":
+                            curMtl[info[0]] = info[1]
+                        else:
+                            curMtl[info[0]] = [float(i) for i in info[1:]]
+                self.mtlDicts.append(curMtl)
 
-
-        print("self.vertices: ", len(self.vertices))
-        print("self.textures: ", len(self.textures))
-        print("self.faces: ", len(self.faces))
-        print("X range: ", xmin, "-", xmax)
-        print("Y range: ", ymin, "-", ymax)
-        print("Z range: ", zmin, "-", zmax)
-        """
+            elif dataType == "usemtl":
+                # not sure what we need here yet
+                continue
         file.close()
         
     def getVertices(self):
@@ -87,3 +119,6 @@ class OBJ:
     
     def getFaces(self):
         return np.array(self.faces)
+    
+    def getMaterials(self):
+        return self.mtlDicts

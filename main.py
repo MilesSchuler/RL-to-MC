@@ -2,12 +2,15 @@ from Point import Point
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
 from NBTMaker import NBTMaker
+from TextureTesting import TextureTesting
 
-model = OBJ("dwayne.obj")
+model = OBJ("dwayne")
 
 v = model.getVertices()
 t = model.getTextures()
 f = model.getFaces()
+
+texture = TextureTesting(model)
 
 converter = BasicConverter
 
