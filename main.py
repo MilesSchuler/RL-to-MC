@@ -1,4 +1,3 @@
-from Point import Point
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
 from NBTMaker import NBTMaker
