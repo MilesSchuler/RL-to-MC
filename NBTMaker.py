@@ -47,5 +47,8 @@ class StructureFile(File, Structure):
     def load(cls, filename, gzipped=True):
         return super().load(filename, gzipped)
 
+# example of how to add new block to palette
+new_structure['palette'][0]['Name'] = 'minecraft:stone'
+
 structure_file = StructureFile(new_structure)
 structure_file.save('new_structure.nbt')  # you can load it in a minecraft world!
