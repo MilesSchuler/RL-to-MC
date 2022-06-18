@@ -10,6 +10,7 @@ Currently in progress, progress updates below:
   - ~~outputs: 3d scaled array **blocks** with blocks[x, y, z] = 1 if a vertex is present in the corresponding block and 0 if no vertex is present~~
 - 6/15/22: Added material file reader; changed ~~Point~~ class to **Block** class; converter now returns set of **Block** instances
   - **Block** class includes coordinates: self.x, self.y, and self.z, as well as self.type (block type)      
+- 6/17/22: First steps into nbt file creation!
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
