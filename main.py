@@ -1,6 +1,6 @@
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
-from NBTMaker import NBTMaker
+from NBTMakerBedrock import NBTMakerBedrock
 from TextureTesting import TextureTesting
 
 model = OBJ("dwayne")
@@ -15,9 +15,9 @@ converter = BasicConverter
 
 h = 50
 
-blocks = converter.convertModel(v, t, f, h)
+blocks, shape = converter.convertModel(v, t, f, h)
 
-creator = NBTMaker
+creator = NBTMakerBedrock(blocks, shape)
 
-structureFile = creator.makeNBT(blocks)
+creator.makeNBT("rock.nbt")
 

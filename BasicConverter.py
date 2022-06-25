@@ -22,9 +22,7 @@ class BasicConverter:
         # Used to make all block positions non-negative
         mins = np.amin(snap, axis = 0) 
         maxes = np.amax(snap, axis = 0)
-        
-        #print(mins, maxes)        
-        
+                
         blocks = set()
 
         for coords in snap:
@@ -32,12 +30,15 @@ class BasicConverter:
            y = int(coords[1] - mins[1])
            z = int(coords[2] - mins[2])
 
-           blockType = "stone" # Will be changed to block choice eventually
+           blockType = "minecraft:stone" # Will be changed to block choice eventually
             
            # Creating instance of Block class
            block = Block(x, y, z, blockType)
            
            blocks.add(block)
+
+        # add one to each element because this is the max and... 0-based counting idk
+        shape = np.int_(np.amax(snap, axis=0) - mins) + [1, 1, 1]
                    
-        return blocks
+        return blocks, shape
         
