@@ -11,6 +11,7 @@ Currently in progress, progress updates below:
 - 6/15/22: Added material file reader; changed ~~Point~~ class to **Block** class; converter now returns set of **Block** instances
   - **Block** class includes coordinates: self.x, self.y, and self.z, as well as self.type (block type)      
 - 6/17/22: First steps into nbt file creation!
+- 6/24/22: Began work on Bedrock nbt
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
