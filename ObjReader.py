@@ -9,8 +9,9 @@ class OBJ:
     def __init__(self, name):
         # name is the name of the folder and the obj file, so path is
         # bird/bird.obj, for example
-        path = name + "/"
-        filename = name + ".obj"
+        self.name = name
+        path = self.name + "/"
+        filename = self.name + ".obj"
         file = open(path + filename)
 
         self.vertices = []
@@ -122,3 +123,6 @@ class OBJ:
     
     def getMaterials(self):
         return self.mtlDicts
+
+    def getName(self):
+        return self.name

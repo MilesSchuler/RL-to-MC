@@ -3,7 +3,7 @@ from BasicConverter import BasicConverter
 from NBTMakerBedrock import NBTMakerBedrock
 from TextureTesting import TextureTesting
 
-model = OBJ("dwayne")
+model = OBJ("mountain")
 
 v = model.getVertices()
 t = model.getTextures()
@@ -17,7 +17,7 @@ h = 50
 
 blocks, shape = converter.convertModel(v, t, f, h)
 
-creator = NBTMakerBedrock(blocks, shape)
+#creator = NBTMakerBedrock(blocks, shape)
 
-creator.makeNBT("rock.nbt")
+#creator.makeNBT("rock.nbt")
 
