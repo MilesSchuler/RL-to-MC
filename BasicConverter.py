@@ -14,9 +14,9 @@ class BasicConverter:
         constArr = np.full(np.shape(vertices), scaleFactor) 
         # Snapping each point to the top left corner of the cube
         snap = np.floor_divide(vertices, constArr)
-        # Removes duplicates
-        snap = np.unique(snap, axis = 1) 
         
+        # Removes duplicates except for the fact that it doesn't
+        #snap = np.unique(snap, axis = 1) 
         ## Converting to Block class
         
         # Used to make all block positions non-negative
@@ -38,7 +38,7 @@ class BasicConverter:
            blocks.add(block)
 
         # add one to each element because this is the max and... 0-based counting idk
-        shape = np.int_(np.amax(snap, axis=0) - mins) + [1, 1, 1]
-                   
-        return blocks, shape
+        shape = np.int_(maxes - mins) + [1, 1, 1]
+
+        return blocks, shape, snap
         

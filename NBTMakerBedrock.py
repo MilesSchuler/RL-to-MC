@@ -22,7 +22,7 @@ class NBTMakerBedrock:
         # add in blocks
         for block in sortedBlocks:
             # get index by finding where it is along the 1d list based off of shape and coords
-            self.blockIndices[block[0] * shape[1] * shape[2] + block[1]*shape[2] + block[2]] = block[3]
+            self.blockIndices[block[0]*shape[1]*shape[2] + block[1]*shape[2] + block[2]] = block[3]
         
         # blockIndices has a second layer of all -1s, sometimes these are other numbers if blocks need a special value
         self.blockIndices = [self.blockIndices, [-1] * np.prod(shape)]
