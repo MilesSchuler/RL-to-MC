@@ -16,41 +16,26 @@ class TextureTesting:
         # assume theres only one material
         mtl = materials[0]
         # file name can be a full path but we just want the name
+        # actually, we want them in the same folder just for ease of access so we should edit the name in the file
         mapName = mtl['map_Kd'].split("\\")[-1]
         mapPath = model.getName() + "/" + mapName
-        map = Image.open(mapPath)
-        pixels = map.load()
-        width, height = map.size
+        self.map = Image.open(mapPath)
+        pixels = self.map.load()
+        self.width, self.height = self.map.size
         
-        draw = ImageDraw.Draw(map)
+        draw = ImageDraw.Draw(self.map)
         
-        # get faces
-        vIndices, indices = self.facesInCube(0, 8, 1)
-        #print("Vertex indices: ", vIndices)
-        #print("Face indices: ", indices)
-        # get texture points and color triangles red
-        for i in indices:
-            f = self.faces[i]
-            # facesInCube can return faces where the index is there but not in the spot we care about
-            if not any(v in [k[0] for k in f] for v in vIndices):
-                continue
-            # point in face can be (v, vt) or (v, vt, vn)
-            tIndex = [point[1] for point in f]
-            # 0 vs 1 based counting
-            tIndex = [t-1 for t in tIndex]
-            t = [self.textures[i] for i in tIndex]
-            # vt points are 0-1
-            xs = [int(width * i[0]) for i in t]
-            ys = [int(height * i[1]) for i in t]
-            #print(xs, ys, tIndex)
-            #for i in range(len(xs)):
-            #    pixels[(xs[i], ys[i])] = (255, 0, 0)
-            draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2])], fill = (255,255,0))
+        uSnap = np.unique(snap, axis=0)
+        # should be set to len(uSnap), 10 is just for demo
+        for i in range(10):
+            cube = uSnap[i]
+            # name to save file
+            name = str(i) + "cropped.png"
+            # get faces
+            vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
+            # save texture of the cube
+            self.saveTexture(vIndices, indices, name)
         
-        map.save('new.png')
-        #for y in range(height):
-        #    for x in range(width):
-        #        print(pixels[(x, y)])
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, x, y, z):
@@ -71,3 +56,26 @@ class TextureTesting:
         faceIndices = np.concatenate([np.unique(np.where(self.faces == i)[0]) for i in indices])
                 
         return indices, faceIndices
+
+    # crop and save portion of texture file based on face indices
+    def saveTexture(self, vIndices, indices, name):
+        xs = []
+        ys = []
+        for i in indices:
+            f = self.faces[i]
+            # facesInCube can return faces where the index is there but not in the spot we care about
+            if not any(v in [k[0] for k in f] for v in vIndices):
+                continue
+            # point in face can be (v, vt) or (v, vt, vn), we want vt
+            tIndex = [point[1] for point in f]
+            # 0 vs 1 based counting
+            tIndex = [t-1 for t in tIndex]
+            t = [self.textures[i] for i in tIndex]
+            # vt points are 0-1, so multiply by dimensions to get coords
+            for i in t:
+                xs.append(int(self.width * i[0]))
+                ys.append(int(self.height * i[1]))
+                
+        coords = [min(xs), min(ys), max(xs), max(ys)]
+        cropped = self.map.crop(coords)
+        cropped.save(name)
