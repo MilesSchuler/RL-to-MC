@@ -15,7 +15,7 @@ f = model.getFaces()
 
 converter = BasicConverter
 
-h = 50
+h = 10
 
 blocks, shape, snap = converter.convertModel(v, t, f, h)  
 

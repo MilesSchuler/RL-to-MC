@@ -1,5 +1,4 @@
-from tkinter.font import ROMAN
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy as np
 
 class TextureTesting:
@@ -12,7 +11,6 @@ class TextureTesting:
         self.faces = model.getFaces()
         self.snap = snap
         
-        faces = model.getFaces()
         materials = model.getMaterials()
 
         # assume theres only one material
@@ -23,28 +21,31 @@ class TextureTesting:
         map = Image.open(mapPath)
         pixels = map.load()
         width, height = map.size
-
-        # turns first vertices in faces list red
-        for f in faces[:10]:
-            vIndex = [point[0] for point in f]
+        
+        draw = ImageDraw.Draw(map)
+        
+        # get faces
+        vIndices, indices = self.facesInCube(0, 8, 1)
+        #print("Vertex indices: ", vIndices)
+        #print("Face indices: ", indices)
+        # get texture points and color triangles red
+        for i in indices:
+            f = self.faces[i]
+            # facesInCube can return faces where the index is there but not in the spot we care about
+            if not any(v in [k[0] for k in f] for v in vIndices):
+                continue
+            # point in face can be (v, vt) or (v, vt, vn)
             tIndex = [point[1] for point in f]
-            v = [self.vertices[i] for i in vIndex]
+            # 0 vs 1 based counting
+            tIndex = [t-1 for t in tIndex]
             t = [self.textures[i] for i in tIndex]
+            # vt points are 0-1
             xs = [int(width * i[0]) for i in t]
             ys = [int(height * i[1]) for i in t]
-            for i in range(3):
-                pixels[(xs[i], ys[i])] = (255, 0, 0)
-
-        # code to remove duplicates from snap but its slow and I don't think we need it
-        """
-        snap = snap.tolist()
-        unique = []
-        for i in snap:
-            if i not in unique:
-                unique.append(i)
-        snap = unique
-        """
-        indices = self.facesInCube(-115, 0, -226)
+            #print(xs, ys, tIndex)
+            #for i in range(len(xs)):
+            #    pixels[(xs[i], ys[i])] = (255, 0, 0)
+            draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2])], fill = (255,255,0))
         
         map.save('new.png')
         #for y in range(height):
@@ -59,10 +60,14 @@ class TextureTesting:
             cube = self.snap[i]
             if all(np.equal([x, y, z], cube)):
                 indices.append(i)
-
+        
+        # if we gave a bad x y z, return empty list
+        if len(indices) == 0:
+            print("no faces here")
+            return [], []
         # obj doesn't use 0-based counting
         indices = [i+1 for i in indices]
         
         faceIndices = np.concatenate([np.unique(np.where(self.faces == i)[0]) for i in indices])
-        
-        return faceIndices
+                
+        return indices, faceIndices
