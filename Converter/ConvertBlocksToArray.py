@@ -22,7 +22,7 @@ class BlocksArray:
         self.blocksNames = []
         blocks = numpy.empty((0, 0), dtype = numpy.uint8)
 
-        directory = "./src/block"
+        directory = "./data/block"
         for filename in glob.iglob(f'{directory}/*'):
             if filename.endswith(".png"):
                 self.classBlocksNames.append(filename[8:])

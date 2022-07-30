@@ -1,6 +1,5 @@
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
-from NBTMakerBedrock import NBTMakerBedrock
 from Texture import Texture
 import time
 
