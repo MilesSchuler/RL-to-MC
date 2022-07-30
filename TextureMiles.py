@@ -5,7 +5,7 @@ class TextureMiles:
     # figuring out how texture mapping works and how we want to use it
     # not even sure how we are going to call this class I just wanted a space to mess around
 
-    def __init__(self, model, shape, snap):
+    def __init__(self, model, _, snap):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()

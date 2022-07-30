@@ -4,8 +4,9 @@ from ConvertBlocksToArray import BlocksArray
 class EuclideanDistance:
 
     def __init__(self):
-        self.blocksPixels = BlocksArray.blocksPixels
-        self.blocksNames = BlocksArray.classBlocksNames
+        ba = BlocksArray()
+        self.blocksPixels = ba.blocksPixels
+        self.blocksNames = ba.classBlocksNames
 
     def find_closest_neighbor(self, inBlock):
 
