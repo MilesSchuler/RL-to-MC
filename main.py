@@ -1,11 +1,12 @@
-from OBJReader.ObjReader import OBJ
+from ObjReader import OBJ
 from BasicConverter import BasicConverter
-from Converter.Texture import Texture
+from Texture import Texture
+from Convert import Convert
+
 import time
 
 name = 'mountain'
 model = OBJ(name)
-
 v = model.getVertices()
 t = model.getTextures()
 f = model.getFaces()
@@ -21,6 +22,8 @@ texture = Texture(model, shape, snap)
 start_time = time.time()
 
 demo = texture.getImage([0, 0, 0])
+
+c = Convert(snap)
 
 # creator = NBTMakerBedrock(blocks, shape)
 

@@ -15,6 +15,3 @@ class Convert:
             blockName = BlocksArray.classBlocksNames[neighborIndex]
             print(blockName)
             self.blocksList.append(blockName)
-
-
-c = Convert()

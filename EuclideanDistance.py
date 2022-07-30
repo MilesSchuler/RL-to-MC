@@ -1,5 +1,5 @@
 import numpy as np
-from Converter.ConvertBlocksToArray import BlocksArray
+from ConvertBlocksToArray import BlocksArray
 
 class EuclideanDistance:
 

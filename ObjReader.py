@@ -10,7 +10,7 @@ class OBJ:
         # name is the name of the folder and the obj file, so path is
         # bird/bird.obj, for example
         self.name = name
-        path = self.name + "/"
+        path = "./data/" + name + "/"
         filename = self.name + ".obj"
         file = open(path + filename)
 
