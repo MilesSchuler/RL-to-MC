@@ -2,7 +2,7 @@ import numpy as np
 from Block import Block
 
 class BasicConverter:
-    def convertModel(vertices, textures, faces, height):
+    def convertModel(self, vertices, textures, faces, height):
         
         ## Snapping vertices to cube lattice
         maxH = np.amax(vertices, axis = 0)[1]

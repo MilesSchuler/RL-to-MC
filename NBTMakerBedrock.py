@@ -11,7 +11,7 @@ class NBTMakerBedrock:
     def __init__(self, blocks, shape):
         self.shape = shape
         # make block palette from block types in input array, add air at the beginning
-        self.palette = np.append('minecraft:air', np.unique([block.type for block in blocks]))
+        self.palette = np.append('minecraft:air', np.unique(["minecraft:" + block.type for block in blocks]))
         # turn blocks set into array, substituting the block name for its index in the palette using np.where,
         # which for some reason returns it as [[index]]
         blocksArr = np.asarray([[block.x, block.y, block.z, np.where(self.palette == block.type)[0][0]] for block in blocks])
