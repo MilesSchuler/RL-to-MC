@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 import numpy as np
-
+import time
 class Texture:
     # figuring out how texture mapping works and how we want to use it
     # not even sure how we are going to call this class I just wanted a space to mess around
@@ -26,6 +26,7 @@ class Texture:
         self.draw = ImageDraw.Draw(self.map)
 
     def getImage(self, cubeNum):
+
         uSnap = np.unique(self.snap, axis=0)
         cube = uSnap[cubeNum]
         # get faces
@@ -40,20 +41,25 @@ class Texture:
     def facesInCube(self, x, y, z):
         # should be able to use np.where but can't figure out how :/
         indices = []
+        start = time.time()
+        indices = np.where(self.snap == [x, y, z])[0]
+
+        """
         for i in range(len(self.snap)):
             cube = self.snap[i]
             if all(np.equal([x, y, z], cube)):
-                indices.append(i)
-        
+                indices.append(i + 1)"""
+
+        print(time.time() - start)
+
         # if we gave a bad x y z, return empty list
         if len(indices) == 0:
             print("no faces here")
             return [], []
         # obj doesn't use 0-based counting
-        indices = [i+1 for i in indices]
-        
+        np.add(indices, 1)
+
         faceIndices = np.concatenate([np.unique(np.where(self.faces == i)[0]) for i in indices])
-                
         return indices, faceIndices
 
     # get portion of texture file based on face indices
@@ -106,6 +112,5 @@ class Texture:
         for i in range(256):
             x = np.around(scaleX * (i % 16))
             y = np.around(scaleY * (i // 16))
-            print(self.pixels[(x, y)])
             block = np.append(block, self.pixels[(x, y)])
         return block

@@ -4,7 +4,7 @@ import glob
 
 class BlocksArray:
     def __init__(self) -> None:
-        self.blocksArray = self.blocksArray()
+        self.blocks = self.blocksArray()
 
     def rgbValues(imageName: str):
         im = Image.open("block/" + imageName, "r")

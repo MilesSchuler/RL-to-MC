@@ -4,8 +4,6 @@ from NBTMakerBedrock import NBTMakerBedrock
 from Texture import Texture
 import time
 
-start_time = time.time()
-
 name = 'mountain'
 model = OBJ(name)
 
@@ -21,10 +19,12 @@ blocks, shape, snap = converter.convertModel(v, t, f, h)
 
 texture = Texture(model, snap)
 
-a = texture.getImage(0)
+start_time = time.time()
 
-#creator = NBTMakerBedrock(blocks, shape)
+demo = texture.getImage(0)
 
-#creator.makeNBT(name + ".nbt")
+# creator = NBTMakerBedrock(blocks, shape)
+
+# creator.makeNBT(name + ".nbt")
 
 print(time.time() - start_time)

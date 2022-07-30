@@ -1,19 +1,19 @@
 import numpy as np
-from BlocksArray import blocksArray
+from ConvertBlocksToArray import BlocksArray
 
 class EuclideanDistance:
 
     def __init__(self):
-        self.blocks = blocksArray
+        self.blocks = BlocksArray.blocks
 
     def find_closest_neighbor(self, inBlock):
 
-        n = blocksArray.shape[1]
+        n = self.blocks.shape[1]
         minDistance = np.inf
         minBlock = 0
 
         for i in range(n):
-            block = blocksArray[i]
+            block = self.blocks[i]
             dot = np.dot(block, inBlock)
 
             if dot < minDistance:

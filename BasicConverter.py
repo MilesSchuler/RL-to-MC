@@ -15,8 +15,7 @@ class BasicConverter:
         # Snapping each point to the top left corner of the cube
         snap = np.floor_divide(vertices, constArr)
         
-        # Removes duplicates except for the fact that it doesn't
-        #snap = np.unique(snap, axis = 1) 
+
         ## Converting to Block class
         
         # Used to make all block positions non-negative
