@@ -1,11 +1,11 @@
 from PIL import Image, ImageDraw
 import numpy as np
 import time
-class Texture:
+class TextureMiles:
     # figuring out how texture mapping works and how we want to use it
     # not even sure how we are going to call this class I just wanted a space to mess around
 
-    def __init__(self, model, snap):
+    def __init__(self, model, shape, snap):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
@@ -18,17 +18,15 @@ class Texture:
         # file name can be a full path but we just want the name
         # actually, we want them in the same folder just for ease of access so we should edit the name in the file
         mapName = mtl['map_Kd'].split("\\")[-1]
-        mapPath = model.getName() + "/" + mapName
+        mapPath = "./data/" + model.getName() + "/" + mapName
         self.map = Image.open(mapPath)
         self.pixels = self.map.load()
         self.width, self.height = self.map.size
         
         self.draw = ImageDraw.Draw(self.map)
 
-    def getImage(self, cubeNum):
-
-        uSnap = np.unique(self.snap, axis=0)
-        cube = uSnap[cubeNum]
+    def getImage(self, blockCoords):
+        cube = blockCoords
         # get faces
         vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
         # get texture of the cube

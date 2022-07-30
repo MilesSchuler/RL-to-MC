@@ -1,6 +1,6 @@
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
-from Texture import Texture
+from TextureMiles import TextureMiles
 from Convert import Convert
 from NBTMakerBedrock import NBTMakerBedrock
 
@@ -17,7 +17,7 @@ f = model.getFaces()
 converter = BasicConverter()
 h = 10
 blocks, shape, snap = converter.convertModel(v, t, f, h)
-tex = Texture(model, shape, snap)
+tex = TextureMiles(model, shape, snap)
 
 blockTypes = Convert(snap, tex).blocksList
 for i in blocks:
