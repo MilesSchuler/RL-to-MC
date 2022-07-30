@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 import numpy as np
 
-class TextureTesting:
+class Texture:
     # figuring out how texture mapping works and how we want to use it
     # not even sure how we are going to call this class I just wanted a space to mess around
 
@@ -20,23 +20,21 @@ class TextureTesting:
         mapName = mtl['map_Kd'].split("\\")[-1]
         mapPath = model.getName() + "/" + mapName
         self.map = Image.open(mapPath)
-        pixels = self.map.load()
+        self.pixels = self.map.load()
         self.width, self.height = self.map.size
         
         self.draw = ImageDraw.Draw(self.map)
-        
-        uSnap = np.unique(snap, axis=0)
-        # should be set to len(uSnap), 10 is just for demo
-        for i in [2]:
-            cube = uSnap[i]
-            # name to save file
-            name = str(i) + "cropped.png"
-            # get faces
-            vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
-            # save texture of the cube
-            #self.saveTexture(vIndices, indices, name)
-            self.drawBlob(vIndices, indices)
-        
+
+    def getImage(self, cubeNum):
+        uSnap = np.unique(self.snap, axis=0)
+        cube = uSnap[cubeNum]
+        # get faces
+        vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
+        # get texture of the cube
+        coords = self.getTexture(vIndices, indices)
+        #self.drawBlob(vIndices, indices)
+        # stretch/shrink to 16x16 array
+        return self.scale(coords)
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, x, y, z):
@@ -58,8 +56,8 @@ class TextureTesting:
                 
         return indices, faceIndices
 
-    # crop and save portion of texture file based on face indices
-    def saveTexture(self, vIndices, indices, name):
+    # get portion of texture file based on face indices
+    def getTexture(self, vIndices, indices):
         xs = []
         ys = []
         for i in indices:
@@ -78,8 +76,7 @@ class TextureTesting:
                 ys.append(int(self.height * i[1]))
                 
         coords = [min(xs), min(ys), max(xs), max(ys)]
-        cropped = self.map.crop(coords)
-        cropped.save(name)
+        return coords
 
     def drawBlob(self, vIndices, indices):
         for i in indices:
@@ -101,3 +98,14 @@ class TextureTesting:
             
             self.draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2])], fill=(255, 0, 0))
             self.map.save("new.png")
+    
+    def scale(self, coords):
+        block = np.array([], dtype=np.uint8)
+        scaleX = (coords[2] - coords[0]) / 16
+        scaleY = (coords[3] - coords[1]) / 16
+        for i in range(256):
+            x = np.around(scaleX * (i % 16))
+            y = np.around(scaleY * (i // 16))
+            print(self.pixels[(x, y)])
+            block = np.append(block, self.pixels[(x, y)])
+        return block

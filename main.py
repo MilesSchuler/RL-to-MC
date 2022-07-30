@@ -1,7 +1,7 @@
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
 from NBTMakerBedrock import NBTMakerBedrock
-from TextureTesting import TextureTesting
+from Texture import Texture
 import time
 
 start_time = time.time()
@@ -19,7 +19,9 @@ h = 10
 
 blocks, shape, snap = converter.convertModel(v, t, f, h)  
 
-texture = TextureTesting(model, snap)
+texture = Texture(model, snap)
+
+a = texture.getImage(0)
 
 #creator = NBTMakerBedrock(blocks, shape)
 
