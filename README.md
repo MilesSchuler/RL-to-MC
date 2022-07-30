@@ -12,6 +12,12 @@ Currently in progress, progress updates below:
   - **Block** class includes coordinates: self.x, self.y, and self.z, as well as self.type (block type)      
 - 6/17/22: First steps into nbt file creation!
 - 6/24/22: Began work on Bedrock nbt
+- 7/28/22: First texture image reader
+- 7/30/22: Massive progress!!
+  - Block classifier using minimum Euclidean distance
+  - More efficient texture image reader
+  - Tweaked NBT makers
+
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
