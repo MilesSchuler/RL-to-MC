@@ -14,3 +14,7 @@ class Convert:
             neighborIndex = EuclideanDistance.find_closest_neighbor(img)
             blockName = BlocksArray.classBlocksNames[neighborIndex]
             print(blockName)
+            self.blocksList.append(blockName)
+
+
+c = Convert()
