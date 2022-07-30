@@ -3,10 +3,6 @@ import numpy
 import glob
 import os
 
-class BlocksArray:
-    def __init__(self):
-        self.blocksArray = []
-
 def rgbValues(imageName: str):
     im = Image.open("block/" + imageName, "r")
     pixelValues = list(im.getdata())
@@ -30,3 +26,7 @@ for filename in glob.iglob(f'{directory}/*'):
         blocks = numpy.append(blocks, values)
 
 addToClipBoard(str(blocks))
+
+class BlocksArray:
+    def __init__(self):
+        self.blocksArray = []
