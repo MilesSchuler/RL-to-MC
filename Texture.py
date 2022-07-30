@@ -9,17 +9,15 @@ class Texture:
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
-        self.bigArr = np.full(np.append(shape, 0), -1)
 
+        self.bigArr = np.full(shape, "")
         for i in range(len(snap)):
-            x = snap[i][0]
-            y = snap[i][1]
-            z = snap[i][2]
 
-            if self.bigArr[x][y][z][0] == -1:
-                self.bigArr[x][y][z] = np.array([i])
-            else:
-                self.bigArr[x][y][z] = np.append(self.bigArr[x][y][z], i)
+            x = int(snap[i][0])
+            y = int(snap[i][1])
+            z = int(snap[i][2])
+
+            self.bigArr[x][y][z] += str(i) + " "
         
         materials = model.getMaterials()
 
@@ -41,7 +39,7 @@ class Texture:
         y = blockCoords[1]
         z = blockCoords[2]
 
-        vIndices = self.bigArr[x][y][z]
+        vIndices = self.bigArr[x][y][z].split()
 
         # get faces
         fIndices = self.facesInCube(vIndices)
