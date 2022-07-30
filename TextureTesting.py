@@ -27,7 +27,7 @@ class TextureTesting:
         
         uSnap = np.unique(snap, axis=0)
         # should be set to len(uSnap), 10 is just for demo
-        for i in [3, 6, 8, 1234, 7, 8, 4367, 35, 234, 76]:
+        for i in [2]:
             cube = uSnap[i]
             # name to save file
             name = str(i) + "cropped.png"
