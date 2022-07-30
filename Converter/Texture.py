@@ -5,11 +5,21 @@ class Texture:
     # figuring out how texture mapping works and how we want to use it
     # not even sure how we are going to call this class I just wanted a space to mess around
 
-    def __init__(self, model, snap):
+    def __init__(self, model, shape, snap):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
-        self.snap = snap
+        self.bigArr = np.full(np.append(shape, 0), -1)
+
+        for i in range(len(snap)):
+            x = snap[i][0]
+            y = snap[i][1]
+            z = snap[i][2]
+
+            if self.bigArr[x][y][z][0] == -1:
+                self.bigArr[x][y][z] = np.array([i])
+            else:
+                self.bigArr[x][y][z] = np.append(self.bigArr[x][y][z], i)
         
         materials = model.getMaterials()
 
@@ -25,37 +35,27 @@ class Texture:
         
         self.draw = ImageDraw.Draw(self.map)
 
-    def getImage(self, cubeNum):
+    def getImage(self, blockCoords):
 
-        uSnap = np.unique(self.snap, axis=0)
-        cube = uSnap[cubeNum]
+        x = blockCoords[0]
+        y = blockCoords[1]
+        z = blockCoords[2]
+
+        vIndices = self.bigArr[x][y][z]
+
         # get faces
-        vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
+        fIndices = self.facesInCube(vIndices)
+
         # get texture of the cube
-        coords = self.getTexture(vIndices, indices)
+        coords = self.getTexture(vIndices, fIndices)
+
         #self.drawBlob(vIndices, indices)
         # stretch/shrink to 16x16 array
         return self.scale(coords)
 
     # get all the faces that have vertices in a given cube
-    def facesInCube(self, x, y, z):
-        # should be able to use np.where but can't figure out how :/
-        indices = []
-        start = time.time()
-        indices = np.where(self.snap == [x, y, z])[0]
+    def facesInCube(self, indices):
 
-        """
-        for i in range(len(self.snap)):
-            cube = self.snap[i]
-            if all(np.equal([x, y, z], cube)):
-                indices.append(i + 1)"""
-
-        print(time.time() - start)
-
-        # if we gave a bad x y z, return empty list
-        if len(indices) == 0:
-            print("no faces here")
-            return [], []
         # obj doesn't use 0-based counting
         np.add(indices, 1)
 

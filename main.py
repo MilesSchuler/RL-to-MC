@@ -16,11 +16,11 @@ h = 10
 
 blocks, shape, snap = converter.convertModel(v, t, f, h)  
 
-texture = Texture(model, snap)
+texture = Texture(model, shape, snap)
 
 start_time = time.time()
 
-demo = texture.getImage(0)
+demo = texture.getImage([0, 0, 0])
 
 # creator = NBTMakerBedrock(blocks, shape)
 
