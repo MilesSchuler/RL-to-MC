@@ -29,7 +29,7 @@ class BasicConverter:
            y = int(coords[1] - mins[1])
            z = int(coords[2] - mins[2])
 
-           blockType = "minecraft:stone" # Will be changed to block choice eventually
+           blockType = "foo" # Will be changed to block choice eventually
             
            # Creating instance of Block class
            block = Block(x, y, z, blockType)
