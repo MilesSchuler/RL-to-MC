@@ -1,11 +1,10 @@
 from PIL import Image
 import numpy
 import glob
-import os
 
 class BlocksArray:
-    def __init__(self):
-        self.blocksArray = numpy.array([])
+    def __init__(self) -> None:
+        self.blocksArray = self.blocksArray()
 
     def rgbValues(imageName: str):
         im = Image.open("block/" + imageName, "r")
@@ -17,7 +16,7 @@ class BlocksArray:
             blockRGBValues = numpy.append(blockRGBValues, rgba[2])
         return blockRGBValues
 
-    def getRGB(self):
+    def blocksArray(self):
         blocks = numpy.empty((0, 0), dtype = numpy.uint8)
 
         directory = "./block"
@@ -26,4 +25,4 @@ class BlocksArray:
                 values = self.rgbValues(filename[8:])
                 blocks = numpy.append(blocks, values)
 
-        self.blocksArray = blocks
+        return blocks
