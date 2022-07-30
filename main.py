@@ -6,7 +6,7 @@ import time
 
 start_time = time.time()
 
-name = 'mountain'
+name = 'bird'
 model = OBJ(name)
 
 v = model.getVertices()

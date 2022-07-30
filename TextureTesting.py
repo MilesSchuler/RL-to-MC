@@ -23,18 +23,19 @@ class TextureTesting:
         pixels = self.map.load()
         self.width, self.height = self.map.size
         
-        draw = ImageDraw.Draw(self.map)
+        self.draw = ImageDraw.Draw(self.map)
         
         uSnap = np.unique(snap, axis=0)
         # should be set to len(uSnap), 10 is just for demo
-        for i in range(10):
+        for i in [3, 6, 8, 1234, 7, 8, 4367, 35, 234, 76]:
             cube = uSnap[i]
             # name to save file
             name = str(i) + "cropped.png"
             # get faces
             vIndices, indices = self.facesInCube(cube[0], cube[1], cube[2])
             # save texture of the cube
-            self.saveTexture(vIndices, indices, name)
+            #self.saveTexture(vIndices, indices, name)
+            self.drawBlob(vIndices, indices)
         
 
     # get all the faces that have vertices in a given cube
@@ -79,3 +80,24 @@ class TextureTesting:
         coords = [min(xs), min(ys), max(xs), max(ys)]
         cropped = self.map.crop(coords)
         cropped.save(name)
+
+    def drawBlob(self, vIndices, indices):
+        for i in indices:
+            xs = []
+            ys = []
+            f = self.faces[i]
+            # facesInCube can return faces where the index is there but not in the spot we care about
+            if not any(v in [k[0] for k in f] for v in vIndices):
+                continue
+            # point in face can be (v, vt) or (v, vt, vn), we want vt
+            tIndex = [point[1] for point in f]
+            # 0 vs 1 based counting
+            tIndex = [t-1 for t in tIndex]
+            t = [self.textures[i] for i in tIndex]
+            # vt points are 0-1, so multiply by dimensions to get coords
+            for i in t:
+                xs.append(int(self.width * i[0]))
+                ys.append(int(self.height * i[1]))
+            
+            self.draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2])], fill=(255, 0, 0))
+            self.map.save("new.png")
