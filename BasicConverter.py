@@ -24,17 +24,21 @@ class BasicConverter:
                 
         blocks = set()
 
-        for coords in snap:
-           x = int(coords[0] - mins[0])
-           y = int(coords[1] - mins[1])
-           z = int(coords[2] - mins[2])
+        for i in range(len(snap)):
 
-           blockType = "foo" # Will be changed to block choice eventually
+            coords = snap[i]
+            x = int(coords[0] - mins[0])
+            y = int(coords[1] - mins[1])
+            z = int(coords[2] - mins[2])
+
+            snap[i] = [x, y, z]
+            print(snap[i])
+            blockType = "foo" # Will be changed to block choice eventually
             
-           # Creating instance of Block class
-           block = Block(x, y, z, blockType)
+            # Creating instance of Block class
+            block = Block(x, y, z, blockType)
            
-           blocks.add(block)
+            blocks.add(block)
 
         # add one to each element because this is the max and... 0-based counting idk
         shape = np.int_(maxes - mins) + [1, 1, 1]

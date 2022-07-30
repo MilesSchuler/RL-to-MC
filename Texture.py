@@ -26,7 +26,7 @@ class Texture:
         # file name can be a full path but we just want the name
         # actually, we want them in the same folder just for ease of access so we should edit the name in the file
         mapName = mtl['map_Kd'].split("\\")[-1]
-        mapPath = model.getName() + "/" + mapName
+        mapPath = "./data/" + model.getName() + "/" + mapName
         self.map = Image.open(mapPath)
         self.pixels = self.map.load()
         self.width, self.height = self.map.size
@@ -38,8 +38,8 @@ class Texture:
         x = blockCoords[0]
         y = blockCoords[1]
         z = blockCoords[2]
-
-        vIndices = self.bigArr[x][y][z].split()
+        print(x, y, z)
+        vIndices = [int(i) for i in self.bigArr[x][y][z].split()]
 
         # get faces
         fIndices = self.facesInCube(vIndices)

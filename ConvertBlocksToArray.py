@@ -20,7 +20,7 @@ class BlocksArray:
 
     def blocksArray(self):
         self.blocksNames = []
-        blocks = numpy.empty((0, 0), dtype = numpy.uint8)
+        blocks = numpy.empty(shape = (0, 3), dtype = numpy.uint8)
 
         directory = "./data/block"
         for filename in glob.iglob(f'{directory}/*'):
