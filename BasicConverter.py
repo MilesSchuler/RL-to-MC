@@ -32,7 +32,7 @@ class BasicConverter:
             z = int(coords[2] - mins[2])
 
             snap[i] = [x, y, z]
-            print(snap[i])
+
             blockType = "foo" # Will be changed to block choice eventually
             
             # Creating instance of Block class

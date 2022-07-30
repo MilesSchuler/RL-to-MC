@@ -35,10 +35,10 @@ class Texture:
 
     def getImage(self, blockCoords):
 
-        x = blockCoords[0]
-        y = blockCoords[1]
-        z = blockCoords[2]
-        print(x, y, z)
+        x = int(blockCoords[0])
+        y = int(blockCoords[1])
+        z = int(blockCoords[2])
+
         vIndices = [int(i) for i in self.bigArr[x][y][z].split()]
 
         # get faces
@@ -65,7 +65,7 @@ class Texture:
         xs = []
         ys = []
         for i in indices:
-            f = self.faces[i]
+            f = self.faces[i][0]
             # facesInCube can return faces where the index is there but not in the spot we care about
             if not any(v in [k[0] for k in f] for v in vIndices):
                 continue
