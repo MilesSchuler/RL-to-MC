@@ -23,7 +23,7 @@ class BlocksArray:
         directory = "./block"
         for filename in glob.iglob(f'{directory}/*'):
             if filename.endswith(".png"):
-                values = rgbValues(filename[8:])
+                values = self.rgbValues(filename[8:])
                 blocks = numpy.append(blocks, values)
 
         self.blocksArray = blocks
