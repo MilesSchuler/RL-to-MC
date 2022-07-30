@@ -1,6 +1,6 @@
-from ObjReader import OBJ
+from OBJReader.ObjReader import OBJ
 from BasicConverter import BasicConverter
-from Texture import Texture
+from Converter.Texture import Texture
 import time
 
 name = 'mountain'
