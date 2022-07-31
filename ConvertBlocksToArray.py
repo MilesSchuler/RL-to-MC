@@ -2,6 +2,8 @@ from PIL import Image
 import numpy
 import glob
 
+from regex import P
+
 class BlocksArray:
     blockTypes = [
 "ancient_debris",
@@ -355,7 +357,8 @@ class BlocksArray:
     def blocksArray(self):
         blocks = numpy.empty(shape = (len(self.blockTypes), 768), dtype = numpy.uint8)
         for i in range(len(self.blockTypes)):
-            filepath = "./data/block/" + self.blockTypes[i] + ".png"
-            values = self.rgbValues(filepath)
-            blocks[i] = values
+            blockName = self.blockTypes[i]
+            filepath = "./data/block/" + blockName + ".png"
+            rgb = self.rgbValues(filepath)
+            blocks[i] = rgb
         return blocks
