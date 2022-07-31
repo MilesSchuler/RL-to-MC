@@ -13,3 +13,5 @@ class Convert:
             neighborIndex = ec.find_closest_neighbor(img)
             blockName = BlocksArray().blockTypes[neighborIndex]
             self.blocksList.append(blockName)
+
+            print("block at " + str(cube[0]) + str(cube[1]) + str(cube[2]) + " is " + blockName)
