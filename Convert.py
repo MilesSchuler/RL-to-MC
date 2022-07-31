@@ -14,4 +14,4 @@ class Convert:
             blockName = BlocksArray().blockTypes[neighborIndex]
             self.blocksList.append(blockName)
 
-            print("block at " + str(cube[0]) + str(cube[1]) + str(cube[2]) + " is " + blockName)
+            print("block at " + str(cube[0]) + ", " + str(cube[1]) + ", " + str(cube[2]) + " is " + blockName)
