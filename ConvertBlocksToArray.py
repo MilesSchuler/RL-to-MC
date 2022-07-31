@@ -10,7 +10,7 @@ class BlocksArray:
 
     def rgbValues(self, imageName: str):
         im = Image.open(imageName, "r")
-        pixelValues = list(im.getdata())
+        pixelValues = list(im.getdata())[:256]
         blockRGBValues = numpy.array([], dtype = numpy.uint8)
         for rgba in pixelValues:
             blockRGBValues = numpy.append(blockRGBValues, rgba[0])
@@ -19,13 +19,21 @@ class BlocksArray:
         return blockRGBValues
 
     def blocksArray(self):
-        self.blocksNames = []
-        blocks = numpy.empty(shape = (0, 3), dtype = numpy.uint8)
-
         directory = "./data/block"
+        self.blocksNames = []
+        blockCount = 0
+        for filename in glob.iglob(f'{directory}/*'):
+            if filename.endswith(".png"):
+                blockCount += 1
+
+        blocks = numpy.empty(shape = (blockCount, 768), dtype = numpy.uint8)
+        count = 0
         for filename in glob.iglob(f'{directory}/*'):
             if filename.endswith(".png"):
                 self.classBlocksNames.append(filename[8:-4])
                 values = self.rgbValues(filename)
-                blocks = numpy.append(blocks, values)
+                print(filename)
+                blocks[count] = values
+
+            count += 1
         return blocks
