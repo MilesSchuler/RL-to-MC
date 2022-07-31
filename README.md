@@ -14,6 +14,7 @@ Currently in progress, progress updates below:
 - 6/24/22: Began work on Bedrock nbt
 - 7/28/22: First texture image reader
 - 7/30/22: Massive progress!!
+  - Added Minecraft block data
   - Block classifier using minimum Euclidean distance
   - More efficient texture image reader
   - Tweaked NBT makers
