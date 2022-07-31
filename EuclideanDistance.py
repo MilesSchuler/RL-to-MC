@@ -6,7 +6,7 @@ class EuclideanDistance:
     def __init__(self):
         ba = BlocksArray()
         self.blocksPixels = ba.blocksPixels
-        self.blocksNames = ba.classBlocksNames
+        self.blocksNames = ba.blockTypes
 
     def find_closest_neighbor(self, inBlock):
         n = self.blocksPixels.shape[1]
