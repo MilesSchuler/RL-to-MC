@@ -9,9 +9,7 @@ class Convert:
         uSnap = numpy.unique(snap, axis = 0)
         for cube in uSnap:
             img = texture.getImage(cube)
-            
             ec = EuclideanDistance()
             neighborIndex = ec.find_closest_neighbor(img)
-            blockName = BlocksArray.classBlocksNames[neighborIndex]
-            print(blockName)
+            blockName = BlocksArray().blockTypes[neighborIndex]
             self.blocksList.append(blockName)

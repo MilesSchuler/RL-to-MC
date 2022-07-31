@@ -1,8 +1,5 @@
 from PIL import Image
 import numpy
-import glob
-
-from regex import P
 
 class BlocksArray:
     blockTypes = [

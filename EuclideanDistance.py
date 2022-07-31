@@ -9,7 +9,7 @@ class EuclideanDistance:
         self.blocksNames = ba.blockTypes
 
     def find_closest_neighbor(self, inBlock):
-        n = self.blocksPixels.shape[1]
+        n = self.blocksPixels.shape[0]
         minDistance = np.inf
         minBlock = 0
 
