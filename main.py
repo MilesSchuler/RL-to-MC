@@ -15,12 +15,13 @@ t = model.getTextures()
 f = model.getFaces()
 
 converter = BasicConverter()
-h = 10
+h = 4
 blocks, shape, snap = converter.convertModel(v, t, f, h)
 tex = Texture(model, shape, snap)
 
 blockTypes = Convert(snap, tex).blocksList
 for i in range(len(blocks)):
+    print(i)
     blocks[i].type = blockTypes[i]
 
 #creator = NBTMakerBedrock(blocks, shape)
