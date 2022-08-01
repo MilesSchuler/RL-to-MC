@@ -4,5 +4,5 @@ class Block:
         self.y = y
         self.z = z
         self.type = t
-    def printLocation(self):
-        print(str(self.x) + ", " + str(self.y) + ", " + str(self.z))
+    def to_string(self):
+        print(self.type + " at " + str(self.x) + ", " + str(self.y) + ", " + str(self.z))
