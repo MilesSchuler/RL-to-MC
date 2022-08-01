@@ -3,10 +3,8 @@ from ConvertBlocksToArray import BlocksArray
 
 class EuclideanDistance:
 
-    def __init__(self):
-        ba = BlocksArray()
-        self.blocksPixels = ba.blocksPixels
-        self.blocksNames = ba.blockTypes
+    def __init__(self, blocksPixels):
+        self.blocksPixels = blocksPixels
 
     def find_closest_neighbor(self, inBlock):
         n = self.blocksPixels.shape[0]
@@ -15,12 +13,11 @@ class EuclideanDistance:
 
         for i in range(n):
             block = self.blocksPixels[i]
-            #dot = np.dot(block, inBlock)
-            dot = np.subtract(block, inBlock)
-            dot = np.sqrt(np.sum(np.square(dot)))
+            diff = np.subtract(block, inBlock)
+            dist = np.dot(diff, diff)
 
-            if dot < minDistance:
-                minDistance = dot
+            if dist < minDistance:
+                minDistance = dist
                 minBlock = i
 
         return minBlock

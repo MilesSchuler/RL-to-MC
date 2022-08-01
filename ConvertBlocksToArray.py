@@ -334,6 +334,7 @@ class BlocksArray:
     
     def __init__(self) -> None:
         self.blocksPixels = self.blocksArray()
+        self.blockInfo = (self.blocksPixels, self.blockTypes)
         
     def rgbValues(self, imageName: str):
         im = Image.open(imageName, "r")

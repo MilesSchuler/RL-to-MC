@@ -39,11 +39,10 @@ class Texture:
         y = int(blockCoords[1])
         z = int(blockCoords[2])
 
-        vIndices = [int(i) for i in self.bigArr[x][y][z].split()]
-
+        # obj doesn't use 0-based counting
+        vIndices = [int(i) + 1 for i in self.bigArr[x][y][z].split()]
         # get faces
         fIndices = self.facesInCube(vIndices)
-
         # get texture of the cube
         coords = self.getTexture(vIndices, fIndices)
 
@@ -53,18 +52,15 @@ class Texture:
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, indices):
-        # obj doesn't use 0-based counting
-        np.add(indices, 1)
-
         faceIndices = np.concatenate([np.unique(np.where(self.faces == i)[0]) for i in indices])
-        return indices, faceIndices
+        return faceIndices
 
     # get portion of texture file based on face indices
     def getTexture(self, vIndices, indices):
         xs = []
         ys = []
         for i in indices:
-            f = self.faces[i][0]
+            f = self.faces[i]
             # facesInCube can return faces where the index is there but not in the spot we care about
             if not any(v in [k[0] for k in f] for v in vIndices):
                 continue
