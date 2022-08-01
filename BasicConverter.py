@@ -1,9 +1,11 @@
 import numpy as np
-from Block import Block
 
 class BasicConverter:
-    def convertModel(self, vertices, textures, faces, height):
-        
+    def convertModel(self, model, height):
+
+        vertices = model.getVertices()
+        textures = model.getTextures()
+        faces = model.getFaces()
         ## Snapping vertices to cube lattice
         maxH = np.amax(vertices, axis = 0)[1]
         minH = np.amin(vertices, axis = 0)[1]
@@ -19,10 +21,9 @@ class BasicConverter:
         ## Converting to Block class
         
         # Used to make all block positions non-negative
-        mins = np.amin(snap, axis = 0) 
-        maxes = np.amax(snap, axis = 0)
-                
-        blocks = []
+        mins = np.amin(snap, axis=0)
+        maxes = np.amax(snap, axis=0)
+
 
         for i in range(len(snap)):
 
@@ -32,16 +33,12 @@ class BasicConverter:
             z = int(coords[2] - mins[2])
 
             snap[i] = [x, y, z]
-            
-            blockType = "foo" # Will be changed to block choice eventually
-            
-            # Creating instance of Block class
-            block = Block(x, y, z, blockType)
-           
-            blocks.append(block)
+
+
+        uSnap = np.unique(snap, axis=0)
 
         # add one to each element because this is the max and... 0-based counting idk
         shape = np.int_(maxes - mins) + [1, 1, 1]
 
-        return blocks, shape, snap
+        return shape, snap, uSnap
         

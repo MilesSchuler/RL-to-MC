@@ -18,7 +18,8 @@ Currently in progress, progress updates below:
   - Block classifier using minimum Euclidean distance
   - More efficient texture image reader
   - Tweaked NBT makers
-
+- 7/31/22: Troubleshooted **Texture** code
+- 8/1/22: Made block classification more efficient, worked on NBT makers
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 

@@ -1,87 +1,50 @@
+import numpy as np
+import time
+
 from ObjReader import OBJ
 from BasicConverter import BasicConverter
 from Texture import Texture
 from Convert import Convert
+from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
 
-import time
 
 start_time = time.time()
 
 name = 'mountain'
 model = OBJ(name)
-v = model.getVertices()
-t = model.getTextures()
-f = model.getFaces()
+
+print("OBJ File read after: ", time.time() - start_time)
 
 converter = BasicConverter()
 h = 4
-blocks, shape, snap = converter.convertModel(v, t, f, h)
+shape, snap, uSnap = converter.convertModel(model, h)
+
+print("Vertices snapped after: ", time.time() - start_time)
+
 tex = Texture(model, shape, snap)
 
-blockTypes = Convert(snap, tex).blocksList
-for i in range(len(blocks)):
-    print(i)
-    blocks[i].type = blockTypes[i]
+print("Textures initialized after: ", time.time() - start_time)
+
+classes = Convert(uSnap, tex)
+blockTypes = classes.blocksList
+
+print("Blocks classified after: ", time.time() - start_time)
+
+n = len(blockTypes)
+blocks = np.array([], dtype=Block)
+
+for i in range(n):
+    blockType = blockTypes[i]
+    [x, y, z] = uSnap[i]
+
+    block = Block(x, y, z, blockType)
+
+    blocks = np.append(blocks, block)
 
 #creator = NBTMakerBedrock(blocks, shape)
 #creator.makeNBT(name + ".nbt")
 
-print(time.time() - start_time)
+print("Total runtime: ", time.time() - start_time)
+print(blocks[0].to_string())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""name = 'mountain'
-model = OBJ(name)
-v = model.getVertices()
-t = model.getTextures()
-f = model.getFaces()
-
-converter = BasicConverter
-h = 10
-blocks, shape, snap = converter.convertModel(v, t, f, h)  
-texture = Texture(model, shape, snap)
-
-
-
-blockTypes = Convert(snap).blocksList
-
-
-# creator = NBTMakerBedrock(blocks, shape)
-
-# creator.makeNBT(name + ".nbt")"""
