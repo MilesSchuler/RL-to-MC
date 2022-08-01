@@ -1,5 +1,4 @@
 from ctypes import Structure
-from unicodedata import name
 
 from numpy import integer
 from Block import Block
@@ -11,11 +10,11 @@ class NBTMakerJava:
     def __init__(self, blocks, shape):
         self.shape = shape
         # make block palette from block types in input array, add air at the beginning
-        self.palette = ["minecraft:air"].extend(set(["minecraft:" + block.type for block in blocks]))
-        print(self.palette)
+        self.palette = np.append('minecraft:air', np.unique(["minecraft:" + block.type for block in blocks]))
+        self.palette = self.palette.tolist()
         # turn blocks set into array, substituting the block name for its index in the palette using np.where,
         # which for some reason returns it as [[index]]
-        blocksArr = [[block.x, block.y, block.z, self.palette.index(block.type)] for block in blocks]
+        blocksArr = [[block.x, block.y, block.z, self.palette.index("minecraft:" + block.type)] for block in blocks]
         # all air to start
         self.blockIndices = [0] * np.prod(shape)
         # add in blocks
@@ -79,4 +78,4 @@ class NBTMakerJava:
 shape = (1, 1, 1)
 b = Block(0, 0, 0, "stone")
 creator = NBTMakerJava([b], shape)
-creator.makeNBT(name + ".nbt")
+creator.makeNBT("struct.nbt")
