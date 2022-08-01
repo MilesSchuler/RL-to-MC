@@ -22,7 +22,7 @@ class BasicConverter:
         mins = np.amin(snap, axis = 0) 
         maxes = np.amax(snap, axis = 0)
                 
-        blocks = set()
+        blocks = []
 
         for i in range(len(snap)):
 
@@ -38,7 +38,7 @@ class BasicConverter:
             # Creating instance of Block class
             block = Block(x, y, z, blockType)
            
-            blocks.add(block)
+            blocks.append(block)
 
         # add one to each element because this is the max and... 0-based counting idk
         shape = np.int_(maxes - mins) + [1, 1, 1]

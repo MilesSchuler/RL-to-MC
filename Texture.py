@@ -53,7 +53,6 @@ class Texture:
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, indices):
-
         # obj doesn't use 0-based counting
         np.add(indices, 1)
 

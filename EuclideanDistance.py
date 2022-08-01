@@ -15,7 +15,9 @@ class EuclideanDistance:
 
         for i in range(n):
             block = self.blocksPixels[i]
-            dot = np.dot(block, inBlock)
+            #dot = np.dot(block, inBlock)
+            dot = np.subtract(block, inBlock)
+            dot = np.sqrt(np.sum(np.square(dot)))
 
             if dot < minDistance:
                 minDistance = dot

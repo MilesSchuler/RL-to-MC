@@ -20,11 +20,11 @@ blocks, shape, snap = converter.convertModel(v, t, f, h)
 tex = Texture(model, shape, snap)
 
 blockTypes = Convert(snap, tex).blocksList
-for i in blocks:
+for i in range(len(blocks)):
     blocks[i].type = blockTypes[i]
 
-creator = NBTMakerBedrock(blocks, shape)
-creator.makeNBT(name + ".nbt")
+#creator = NBTMakerBedrock(blocks, shape)
+#creator.makeNBT(name + ".nbt")
 
 print(time.time() - start_time)
 
