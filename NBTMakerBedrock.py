@@ -12,16 +12,13 @@ class NBTMakerBedrock:
         self.shape = shape
         # make block palette from block types in input array, add air at the beginning
         self.palette = np.append('minecraft:air', np.unique(["minecraft:" + block.type for block in blocks]))
+        self.palette = self.palette.tolist()
         print(self.palette)
-        # turn blocks set into array, substituting the block name for its index in the palette using np.where,
-        # which for some reason returns it as [[index]]
-        blocksArr = np.asarray([[block.x, block.y, block.z, np.where(self.palette == block.type)[0][0]] for block in blocks])
-        # remove dupes and sort. it actually doesn't need to be sorted but np.unique does that automatically
-        sortedBlocks = np.unique(blocksArr, axis=0)
+        blocksArr = [[block.x, block.y, block.z, self.palette.index("minecraft:" + block.type)] for block in blocks]
         # all air to start
         self.blockIndices = [0] * np.prod(shape)
         # add in blocks
-        for block in sortedBlocks:
+        for block in blocksArr:
             # get index by finding where it is along the 1d list based off of shape and coords
             self.blockIndices[block[0]*shape[1]*shape[2] + block[1]*shape[2] + block[2]] = block[3]
         

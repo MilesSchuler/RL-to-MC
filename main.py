@@ -38,7 +38,7 @@ for i in range(n):
     blockType = blockTypes[i]
     [x, y, z] = uSnap[i]
 
-    block = Block(x, y, z, blockType)
+    block = Block(int(x), int(y), int(z), blockType)
 
     blocks = np.append(blocks, block)
 
