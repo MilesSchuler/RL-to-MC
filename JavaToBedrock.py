@@ -1,5 +1,6 @@
 import json
 
+
 class JavaToBedrock:
     def __init__(self):
         file = open('./data/block/java2bedrock.json')

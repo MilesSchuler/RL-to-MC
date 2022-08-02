@@ -1,8 +1,7 @@
-from numpy import integer
-from Block import Block
 # pip install nbt
 from nbtlib import *
 import numpy as np
+
 
 class NBTMakerJava:
     def __init__(self, blocks, shape):

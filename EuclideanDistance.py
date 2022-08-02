@@ -1,5 +1,5 @@
 import numpy as np
-from ConvertBlocksToArray import BlocksArray
+
 
 class EuclideanDistance:
 
@@ -21,4 +21,3 @@ class EuclideanDistance:
                 minBlock = i
 
         return minBlock
-

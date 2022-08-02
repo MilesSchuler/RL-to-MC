@@ -2,7 +2,7 @@ import numpy as np
 import time
 
 from ObjReader import OBJ
-from BasicConverter import BasicConverter
+from BasicConverter import snapVertices
 from Texture import Texture
 from Convert import Convert
 from Block import Block
@@ -11,14 +11,14 @@ from NBTMakerJava import NBTMakerJava
 
 start_time = time.time()
 
-name = 'mountain'
+name = 'bird'
 model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
 
-converter = BasicConverter()
 h = 16
-shape, snap, uSnap = converter.convertModel(model, h)
+
+shape, snap, uSnap = snapVertices(model, h)
 
 print("Vertices snapped after: ", time.time() - start_time)
 
@@ -49,5 +49,3 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(name + "Java.nbt")
 
 print("Total runtime: ", time.time() - start_time)
-print(blocks[0].to_string())
-

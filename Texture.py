@@ -1,9 +1,8 @@
 from PIL import Image, ImageDraw
 import numpy as np
-import time
+
+
 class Texture:
-    # figuring out how texture mapping works and how we want to use it
-    # not even sure how we are going to call this class I just wanted a space to mess around
 
     def __init__(self, model, shape, snap):
         self.vertices = model.getVertices()
@@ -21,10 +20,9 @@ class Texture:
         
         materials = model.getMaterials()
 
-        # assume theres only one material
+        # assume there is only one material
         mtl = materials[0]
-        # file name can be a full path but we just want the name
-        # actually, we want them in the same folder just for ease of access so we should edit the name in the file
+        # file name is a full path but we just want the name
         mapName = mtl['map_Kd'].split("\\")[-1]
         mapPath = "./data/" + model.getName() + "/" + mapName
         self.map = Image.open(mapPath)
@@ -46,7 +44,8 @@ class Texture:
         # get texture of the cube
         coords = self.getTexture(vIndices, fIndices)
 
-        #self.drawBlob(vIndices, indices)
+        # self.drawBlob(vIndices, indices)
+
         # stretch/shrink to 16x16 array
         return self.scale(coords)
 
