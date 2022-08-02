@@ -7,7 +7,7 @@ from nbtlib import *
 import numpy as np
 
 class NBTMakerJava:
-    def __init__(self, blocks, shape):
+    """def __init__(self, blocks, shape):
         self.shape = shape
         # make block palette from block types in input array, add air at the beginning
         self.palette = np.append('minecraft:air', np.unique(["minecraft:" + block.type for block in blocks]))
@@ -23,45 +23,41 @@ class NBTMakerJava:
             self.blockIndices[block[0]*shape[1]*shape[2] + block[1]*shape[2] + block[2]] = block[3]
         
         # blockIndices has a second layer of all -1s, sometimes these are other numbers if blocks need a special value
-        self.blockIndices = [self.blockIndices, [-1] * np.prod(shape)]
+        self.blockIndices = [self.blockIndices, [-1] * np.prod(shape)]"""
 
     def makeNBT(self, filename):
         Structure = schema('Structure', {
-            'format_version': Int,
+            'DataVersion': Int,
+            'author': String,
             'size': List[Int],
-            'structure': schema('structure', {
-                'block_indices': List[List[Int]],
-                'entities': List[Compound],
-                'palette': schema('palette', {
-                    'default': schema('default', {
-                        'block_palette': List[schema('block_state', {
-                            'name': String,
-                            'states': schema('states', {
-                            }),
-                            'version': Int
-                        })],
-                        'block_position_data': Compound
-                    })
-                })
-            }),
-            'structure_world_origin': List[Int]
+            'palette': List[schema('State', {
+                'Name': String,
+                'Properties': Compound,
+            })],
+            'blocks': List[schema('Block', {
+                'state': Int,
+                'pos': List[Int],
+                'nbt': Compound,
+            })],
+            'entities': List[schema('Entity', {
+                'pos': List[Double],
+                'blockPos': List[Int],
+                'nbt': Compound,
+            })],
         })
 
         new_structure = Structure({
-            'format_version': 1,
-            'size': self.shape,
-            'structure': {
-                'block_indices': self.blockIndices,
-                'entities': [],
-                'palette': {
-                    'default': {
-                        'block_palette': 
-                        [{'name': self.palette[i], 'states': {}, 'version': 17959425} for i in range(len(self.palette))],
-                        'block_position_data': {}
-                    }
-                }
-            },
-            'structure_world_origin': [0, 0, 0]
+            'DataVersion': 1139,
+            'author': 'dinnerbone',
+            'size': [1, 2, 1],
+            'palette': [
+                {'Name': 'minecraft:dirt'}
+            ],
+            'blocks': [
+                {'pos': [0, 0, 0], 'state': 0},
+                {'pos': [0, 1, 0], 'state': 0}
+            ],
+            'entities': [],
         })
 
         class StructureFile(File, Structure):
@@ -73,9 +69,6 @@ class NBTMakerJava:
                 return super().load(filename, gzipped)
 
         structure_file = StructureFile(new_structure)
-        structure_file.save(filename, byteorder='little')
+        structure_file.save('new_structure.nbt')  # you can load it in a minecraft world!
 
-shape = (1, 1, 1)
-b = Block(0, 0, 0, "stone")
-creator = NBTMakerJava([b], shape)
-creator.makeNBT("struct.nbt")
+NBTMakerJava().makeNBT("c")
