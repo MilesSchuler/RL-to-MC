@@ -71,4 +71,4 @@ class NBTMakerJava:
         structure_file = StructureFile(new_structure)
         structure_file.save('new_structure.nbt')  # you can load it in a minecraft world!
 
-NBTMakerJava().makeNBT("a")
+NBTMakerJava().makeNBT("b")
