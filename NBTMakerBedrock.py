@@ -6,15 +6,22 @@ from Block import Block
 # pip install nbt
 from nbtlib import *
 import numpy as np
+from JavaToBedrock import JavaToBedrock
 
 class NBTMakerBedrock:
     def __init__(self, blocks, shape):
+        j2b = JavaToBedrock()
         self.shape = shape
         # make block palette from block types in input array, add air at the beginning
         self.palette = np.append('minecraft:air', np.unique(["minecraft:" + block.type for block in blocks]))
         self.palette = self.palette.tolist()
-        print(self.palette)
+        # reformat blocks into a 2d array (need java palette)
         blocksArr = [[block.x, block.y, block.z, self.palette.index("minecraft:" + block.type)] for block in blocks]
+        # convert the palette
+        self.palette, self.states = j2b.convertBlocks(self.palette)
+        for state in self.states:
+            for key in state.keys():
+                state[key] = String(state[key])
         # all air to start
         self.blockIndices = [0] * np.prod(shape)
         # add in blocks
@@ -56,7 +63,7 @@ class NBTMakerBedrock:
                 'palette': {
                     'default': {
                         'block_palette': 
-                        [{'name': self.palette[i], 'states': {}, 'version': 17959425} for i in range(len(self.palette))],
+                        [{'name': self.palette[i], 'states': self.states[i], 'version': 17959425} for i in range(len(self.palette))],
                         'block_position_data': {}
                     }
                 }

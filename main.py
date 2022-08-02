@@ -42,8 +42,8 @@ for i in range(n):
 
     blocks = np.append(blocks, block)
 
-#creator = NBTMakerBedrock(blocks, shape)
-#creator.makeNBT(name + ".nbt")
+creator = NBTMakerBedrock(blocks, shape)
+creator.makeNBT(name + ".nbt")
 
 print("Total runtime: ", time.time() - start_time)
 print(blocks[0].to_string())
