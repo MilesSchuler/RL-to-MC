@@ -29,7 +29,7 @@ print("Textures initialized after: ", time.time() - start_time)
 classes = Convert(uSnap, tex)
 blockTypes = classes.blocksList
 
-print("Blocks classified after: ", time.time() - start_time)
+# print("Blocks classified after: ", time.time() - start_time)
 
 n = len(blockTypes)
 blocks = np.array([], dtype=Block)

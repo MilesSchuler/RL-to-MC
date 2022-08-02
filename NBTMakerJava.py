@@ -26,41 +26,14 @@ class NBTMakerJava:
         self.blockIndices = [self.blockIndices, [-1] * np.prod(shape)]"""
 
     def makeNBT(self, filename):
-        Structure = schema('Structure', {
-            'DataVersion': Int,
-            'author': String,
-            'size': List[Int],
-            'palette': List[schema('State', {
-                'Name': String,
-                'Properties': Compound,
-            })],
-            'blocks': List[schema('Block', {
-                'state': Int,
-                'pos': List[Int],
-                'nbt': Compound,
-            })],
-            'entities': List[schema('Entity', {
-                'pos': List[Double],
-                'blockPos': List[Int],
-                'nbt': Compound,
-            })],
+        new_structure = File({
+            "foo": String("bar"),
+            "spam": IntArray([1, 2, 3]),
+            "egg": List[String](["hello", "world"])
         })
+        new_structure.save("new_structure.nbt", byteorder = "big")
 
-        new_structure = Structure({
-            'DataVersion': 1139,
-            'author': 'dinnerbone',
-            'size': [1, 2, 1],
-            'palette': [
-                {'Name': 'minecraft:dirt'}
-            ],
-            'blocks': [
-                {'pos': [0, 0, 0], 'state': 0},
-                {'pos': [0, 1, 0], 'state': 0}
-            ],
-            'entities': [],
-        })
-
-        class StructureFile(File, Structure):
+        """class StructureFile(File, Structure):
             def __init__(self, structure_data=None):
                 super().__init__(structure_data or {})
                 self.gzipped = False
@@ -69,6 +42,6 @@ class NBTMakerJava:
                 return super().load(filename, gzipped)
 
         structure_file = StructureFile(new_structure)
-        structure_file.save('new_structure.nbt')  # you can load it in a minecraft world!
+        structure_file.save('new_structure.nbt', byteorder='big')  # you can load it in a minecraft world!"""
 
-NBTMakerJava().makeNBT("c")
+NBTMakerJava().makeNBT("foo")
