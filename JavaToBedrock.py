@@ -3,7 +3,7 @@ import json
 
 class JavaToBedrock:
     def __init__(self):
-        file = open('./data/block/java2bedrock.json')
+        file = open('Data/block/java2bedrock.json')
         self.data = json.load(file)
         file.close()
 

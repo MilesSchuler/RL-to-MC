@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def snapVertices(self, model, height):
+def snapVertices(model, height):
 
     vertices = model.getVertices()
     textures = model.getTextures()

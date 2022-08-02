@@ -24,7 +24,7 @@ class Texture:
         mtl = materials[0]
         # file name is a full path but we just want the name
         mapName = mtl['map_Kd'].split("\\")[-1]
-        mapPath = "./data/" + model.getName() + "/" + mapName
+        mapPath = "./Data/" + model.getName() + "/" + mapName
         self.map = Image.open(mapPath)
         self.pixels = self.map.load()
         self.width, self.height = self.map.size

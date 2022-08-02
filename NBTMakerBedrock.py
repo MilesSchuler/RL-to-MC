@@ -3,6 +3,7 @@ from nbtlib import *
 import numpy as np
 from JavaToBedrock import JavaToBedrock
 
+
 class NBTMakerBedrock:
     def __init__(self, blocks, shape):
         j2b = JavaToBedrock()
@@ -70,9 +71,10 @@ class NBTMakerBedrock:
             def __init__(self, structure_data=None):
                 super().__init__(structure_data or {})
                 self.gzipped = False
+
             @classmethod
-            def load(cls, filename, gzipped=False):
-                return super().load(filename, gzipped)
+            def load(cls, name, gzipped=False, byteorder="big"):
+                return super().load(name, gzipped, byteorder)
 
         structure_file = StructureFile(new_structure)
         structure_file.save(filename, byteorder='little')

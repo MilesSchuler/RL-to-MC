@@ -1,4 +1,5 @@
 import numpy as np
+import pathlib
 import time
 
 from ObjReader import OBJ
@@ -11,7 +12,7 @@ from NBTMakerJava import NBTMakerJava
 
 start_time = time.time()
 
-name = 'bird'
+name = 'mountain'
 model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
@@ -32,7 +33,7 @@ blockTypes = classes.blocksList
 # print("Blocks classified after: ", time.time() - start_time)
 
 n = len(blockTypes)
-blocks = np.array([], dtype=Block)
+blocks = np.array([])
 
 for i in range(n):
     blockType = blockTypes[i]
@@ -42,10 +43,17 @@ for i in range(n):
 
     blocks = np.append(blocks, block)
 
-creator = NBTMakerBedrock(blocks, shape)
-creator.makeNBT(name + "Bedrock.nbt")
+new_dir = pathlib.Path("Output/" + name)
+if not new_dir.exists():
+    new_dir.mkdir(parents=True)
 
+
+br_file = new_dir / (name + "Bedrock.nbt")
+creator = NBTMakerBedrock(blocks, shape)
+creator.makeNBT(br_file)
+
+java_file = new_dir / (name + "Java.nbt")
 creator2 = NBTMakerJava(blocks, shape)
-creator2.makeNBT(name + "Java.nbt")
+creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)

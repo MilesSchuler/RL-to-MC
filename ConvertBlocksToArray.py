@@ -358,7 +358,7 @@ class BlocksArray:
         blocks = numpy.empty(shape = (len(self.blockTypes), 768), dtype=numpy.uint8)
         for i in range(len(self.blockTypes)):
             blockName = self.blockTypes[i]
-            filepath = "./data/block/" + blockName + ".png"
+            filepath = "./Data/block/" + blockName + ".png"
             rgb = rgbValues(filepath)
             blocks[i] = rgb
         return blocks
