@@ -20,6 +20,7 @@ Currently in progress, progress updates below:
   - Tweaked NBT makers
 - 7/31/22: Troubleshooted **Texture** code
 - 8/1/22: Made block classification more efficient, worked on NBT makers
+- 8/2/22: First complete successes with both Java and Bedrock nbts! Discovered issue with "holes" in the resulting Minecraft structure file
 
 Ultimate goal: User inputs a .obj file (possibility of adding additional filetypes in the future), program outputs a downloadable Minecraft structure file.
 
