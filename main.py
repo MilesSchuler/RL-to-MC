@@ -7,7 +7,7 @@ from Texture import Texture
 from Convert import Convert
 from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
-
+from NBTMakerJava import NBTMakerJava
 
 start_time = time.time()
 
@@ -17,7 +17,7 @@ model = OBJ(name)
 print("OBJ File read after: ", time.time() - start_time)
 
 converter = BasicConverter()
-h = 4
+h = 16
 shape, snap, uSnap = converter.convertModel(model, h)
 
 print("Vertices snapped after: ", time.time() - start_time)
@@ -43,7 +43,10 @@ for i in range(n):
     blocks = np.append(blocks, block)
 
 creator = NBTMakerBedrock(blocks, shape)
-creator.makeNBT(name + ".nbt")
+creator.makeNBT(name + "Bedrock.nbt")
+
+creator2 = NBTMakerJava(blocks, shape)
+creator2.makeNBT(name + "Java.nbt")
 
 print("Total runtime: ", time.time() - start_time)
 print(blocks[0].to_string())
