@@ -17,7 +17,7 @@ model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
 
-h = 16
+h = 4
 
 shape, snap, uSnap = snapVertices(model, h)
 

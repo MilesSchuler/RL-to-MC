@@ -32,7 +32,6 @@ class Texture:
         self.draw = ImageDraw.Draw(self.map)
 
     def getImage(self, blockCoords):
-
         x = int(blockCoords[0])
         y = int(blockCoords[1])
         z = int(blockCoords[2])
@@ -44,14 +43,13 @@ class Texture:
         # get texture of the cube
         coords = self.getTexture(vIndices, fIndices)
 
-        # self.drawBlob(vIndices, indices)
-
         # stretch/shrink to 16x16 array
         return self.scale(coords)
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, indices):
-        faceIndices = np.concatenate([np.unique(np.where(self.faces == i)[0]) for i in indices])
+        smallFaces = self.faces[:,:,0]
+        faceIndices = np.concatenate([np.unique(np.where(smallFaces == i)[0]) for i in indices])
         return faceIndices
 
     # get portion of texture file based on face indices
@@ -60,14 +58,10 @@ class Texture:
         ys = []
         for i in indices:
             f = self.faces[i]
-            # facesInCube can return faces where the index is there but not in the spot we care about
-            if not any(v in [k[0] for k in f] for v in vIndices):
-                continue
             # point in face can be (v, vt) or (v, vt, vn), we want vt
             tIndex = [point[1] for point in f]
             # 0 vs 1 based counting
-            tIndex = [t-1 for t in tIndex]
-            t = [self.textures[i] for i in tIndex]
+            t = [self.textures[i-1] for i in tIndex]
             # vt points are 0-1, so multiply by dimensions to get coords
             for i in t:
                 xs.append(int(self.width * i[0]))
@@ -76,6 +70,7 @@ class Texture:
         coords = [min(xs), min(ys), max(xs), max(ys)]
         return coords
 
+    # draw blob of where texture on block maps to on texture image, for testing
     def drawBlob(self, vIndices, indices):
         for i in indices:
             xs = []
