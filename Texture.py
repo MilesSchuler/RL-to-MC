@@ -9,14 +9,17 @@ class Texture:
         self.textures = model.getTextures()
         self.faces = model.getFaces()
 
-        self.bigArr = np.full(shape, "")
+        self.bigArr = np.full(shape, [])
         for i in range(len(snap)):
 
             x = int(snap[i][0])
             y = int(snap[i][1])
             z = int(snap[i][2])
-
+            
+            # can't change len of strings 
             self.bigArr[x][y][z] += str(i) + " "
+            
+        #print(self.bigArr[2][1][21])
         
         materials = model.getMaterials()
 
@@ -40,8 +43,10 @@ class Texture:
         vIndices = [int(i) + 1 for i in self.bigArr[x][y][z].split()]
         # get faces
         fIndices = self.facesInCube(vIndices)
+        #print(vIndices)
         # get texture of the cube
-        coords = self.getTexture(vIndices, fIndices)
+        coords = self.getTexture(fIndices)
+        #self.drawBlob(fIndices)
 
         # stretch/shrink to 16x16 array
         return self.scale(coords)
@@ -53,7 +58,7 @@ class Texture:
         return faceIndices
 
     # get portion of texture file based on face indices
-    def getTexture(self, vIndices, indices):
+    def getTexture(self, indices):
         xs = []
         ys = []
         for i in indices:
@@ -66,31 +71,26 @@ class Texture:
             for i in t:
                 xs.append(int(self.width * i[0]))
                 ys.append(int(self.height * i[1]))
-                
+
         coords = [min(xs), min(ys), max(xs), max(ys)]
         return coords
 
     # draw blob of where texture on block maps to on texture image, for testing
-    def drawBlob(self, vIndices, indices):
+    def drawBlob(self, indices):
         for i in indices:
             xs = []
             ys = []
             f = self.faces[i]
-            # facesInCube can return faces where the index is there but not in the spot we care about
-            if not any(v in [k[0] for k in f] for v in vIndices):
-                continue
             # point in face can be (v, vt) or (v, vt, vn), we want vt
             tIndex = [point[1] for point in f]
             # 0 vs 1 based counting
-            tIndex = [t-1 for t in tIndex]
-            t = [self.textures[i] for i in tIndex]
+            t = [self.textures[i-1] for i in tIndex]
             # vt points are 0-1, so multiply by dimensions to get coords
             for i in t:
                 xs.append(int(self.width * i[0]))
                 ys.append(int(self.height * i[1]))
-            
-            self.draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2])], fill=(255, 0, 0))
-            self.map.save("new.png")
+            self.draw.polygon([(xs[0], ys[0]), (xs[1], ys[1]), (xs[2], ys[2]), (xs[3], ys[3])], fill=(255, 0, 0))
+        self.map.save("new.jpg")
     
     def scale(self, coords):
         block = np.array([], dtype=np.uint8)

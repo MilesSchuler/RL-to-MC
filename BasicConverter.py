@@ -4,8 +4,6 @@ import numpy as np
 def snapVertices(model, height):
 
     vertices = model.getVertices()
-    textures = model.getTextures()
-    faces = model.getFaces()
 
     ## Snapping vertices to cube lattice
 
@@ -23,7 +21,8 @@ def snapVertices(model, height):
     # Used to make all block positions non-negative
     mins = np.amin(snap, axis=0)
     maxes = np.amax(snap, axis=0)
-
+    
+    # TODO this can be done in one line with numpy I bet
     for i in range(len(snap)):
 
         coords = snap[i]
