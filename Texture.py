@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw
 import numpy as np
+import collections
 
 
 class Texture:
@@ -9,18 +10,15 @@ class Texture:
         self.textures = model.getTextures()
         self.faces = model.getFaces()
 
-        self.bigArr = np.full(shape, [])
+        self.dict = collections.defaultdict(list)
         for i in range(len(snap)):
 
-            x = int(snap[i][0])
-            y = int(snap[i][1])
-            z = int(snap[i][2])
-            
-            # can't change len of strings 
-            self.bigArr[x][y][z] += str(i) + " "
-            
-        #print(self.bigArr[2][1][21])
-        
+            x = str(snap[i][0])
+            y = str(snap[i][1])
+            z = str(snap[i][2])
+
+            self.dict[x + " " + y + " " + z].append(i)
+
         materials = model.getMaterials()
 
         # assume there is only one material
@@ -35,12 +33,12 @@ class Texture:
         self.draw = ImageDraw.Draw(self.map)
 
     def getImage(self, blockCoords):
-        x = int(blockCoords[0])
-        y = int(blockCoords[1])
-        z = int(blockCoords[2])
+        x = str(blockCoords[0])
+        y = str(blockCoords[1])
+        z = str(blockCoords[2])
 
         # obj doesn't use 0-based counting
-        vIndices = [int(i) + 1 for i in self.bigArr[x][y][z].split()]
+        vIndices = [int(i) + 1 for i in self.dict[x + " " + y + " " + z]]
         # get faces
         fIndices = self.facesInCube(vIndices)
         #print(vIndices)
