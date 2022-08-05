@@ -12,12 +12,14 @@ from NBTMakerJava import NBTMakerJava
 
 start_time = time.time()
 
-name = 'mountain'
+name = 'BigBen'
+# some obj files are sideways
+rotate = True
 model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
 
-h = 4
+h = 16
 
 shape, snap, uSnap = snapVertices(model, h)
 
@@ -32,6 +34,9 @@ blockTypes = classes.blocksList
 
 # print("Blocks classified after: ", time.time() - start_time)
 
+if rotate:
+    shape = np.array([shape[0], shape[2], shape[1]])
+
 n = len(blockTypes)
 blocks = np.array([])
 
@@ -39,7 +44,10 @@ for i in range(n):
     blockType = blockTypes[i]
     [x, y, z] = uSnap[i]
 
-    block = Block(int(x), int(y), int(z), blockType)
+    if rotate:
+        block = Block(int(x), int(z), int(y), blockType)
+    else:
+        block = Block(int(x), int(y), int(z), blockType)
 
     blocks = np.append(blocks, block)
 

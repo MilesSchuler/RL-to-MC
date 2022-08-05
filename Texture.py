@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 import numpy as np
 import collections
+import time
 
 
 class Texture:
@@ -26,6 +27,7 @@ class Texture:
         # file name is a full path but we just want the name
         mapName = mtl['map_Kd'].split("\\")[-1]
         mapPath = "./Data/" + model.getName() + "/" + mapName
+        #mapPath = "new.jpg"
         self.map = Image.open(mapPath)
         self.pixels = self.map.load()
         self.width, self.height = self.map.size
@@ -33,21 +35,31 @@ class Texture:
         self.draw = ImageDraw.Draw(self.map)
 
     def getImage(self, blockCoords):
+        #start_time = time.time()
         x = str(blockCoords[0])
         y = str(blockCoords[1])
         z = str(blockCoords[2])
 
         # obj doesn't use 0-based counting
         vIndices = [int(i) + 1 for i in self.dict[x + " " + y + " " + z]]
+        #a = time.time()
+        #print("vIndices gotten: " + str(a-start_time))
         # get faces
         fIndices = self.facesInCube(vIndices)
-        #print(vIndices)
+        #print(len(vIndices), len(fIndices))
+        #b = time.time()
+        #print("fIndices gotten: " + str(b-a))
         # get texture of the cube
         coords = self.getTexture(fIndices)
+        #c = time.time()
+        #print("coords gotten: " + str(c-b))
         #self.drawBlob(fIndices)
 
         # stretch/shrink to 16x16 array
-        return self.scale(coords)
+        coords = self.scale(coords)
+        #d = time.time()
+        #print("coords scaled: " + str(d-c))
+        return coords
 
     # get all the faces that have vertices in a given cube
     def facesInCube(self, indices):
