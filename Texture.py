@@ -10,6 +10,9 @@ class Texture:
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
+        # texture index table where indexTable[i] is the texture indices that go with vertex i
+        self.indexTable = self.reformat()
+
 
         self.dict = collections.defaultdict(list)
         for i in range(len(snap)):
@@ -17,8 +20,8 @@ class Texture:
             x = str(snap[i][0])
             y = str(snap[i][1])
             z = str(snap[i][2])
-
-            self.dict[x + " " + y + " " + z].append(i)
+            for index in self.indexTable[i]:
+                self.dict[x + " " + y + " " + z].append(index)
 
         materials = model.getMaterials()
 
@@ -34,54 +37,51 @@ class Texture:
         
         self.draw = ImageDraw.Draw(self.map)
 
+    def reformat(self):
+        # don't need the normals
+        newFaces = self.faces[:,:,0:2]
+        # don't need to split it up by faces
+        newFaces = np.concatenate(newFaces)
+        # don't need identical mappings (e.g. [1, 1] and [1, 1])
+        newFaces = np.unique(newFaces, axis=0)
+        # now we have vIndices and tIndices
+        vIndices, tIndices = newFaces[:,0], newFaces[:,1]
+        # return_index returns the list of indices that give you the unique array
+        # so the [1] just gets that and the [1:] takes the 0 off the beginning because that will mess up the split
+        splitIndices = np.unique(vIndices, return_index=True)[1][1:]
+        # split the texture indices based on the vertices they are assigned to for easy lookups later
+        tIndices = np.split(tIndices, splitIndices)
+        return tIndices
+
     def getImage(self, blockCoords):
-        #start_time = time.time()
         x = str(blockCoords[0])
         y = str(blockCoords[1])
         z = str(blockCoords[2])
 
-        # obj doesn't use 0-based counting
-        vIndices = [int(i) + 1 for i in self.dict[x + " " + y + " " + z]]
-        #a = time.time()
-        #print("vIndices gotten: " + str(a-start_time))
-        # get faces
-        fIndices = self.facesInCube(vIndices)
-        #print(len(vIndices), len(fIndices))
-        #b = time.time()
-        #print("fIndices gotten: " + str(b-a))
+        tIndices = self.dict[x + " " + y + " " + z]
         # get texture of the cube
-        coords = self.getTexture(fIndices)
-        #c = time.time()
-        #print("coords gotten: " + str(c-b))
-        #self.drawBlob(fIndices)
-
+        coords = self.getTexture(tIndices)
         # stretch/shrink to 16x16 array
         coords = self.scale(coords)
-        #d = time.time()
-        #print("coords scaled: " + str(d-c))
         return coords
 
-    # get all the faces that have vertices in a given cube
+    # get all the faces that have vertices in a given cube, unused
     def facesInCube(self, indices):
         smallFaces = self.faces[:,:,0]
         faceIndices = np.concatenate([np.unique(np.where(smallFaces == i)[0]) for i in indices])
         return faceIndices
 
     # get portion of texture file based on face indices
-    def getTexture(self, indices):
+    def getTexture(self, tIndices):
         xs = []
         ys = []
-        for i in indices:
-            f = self.faces[i]
-            # point in face can be (v, vt) or (v, vt, vn), we want vt
-            tIndex = [point[1] for point in f]
-            # 0 vs 1 based counting
-            t = [self.textures[i-1] for i in tIndex]
-            # vt points are 0-1, so multiply by dimensions to get coords
-            for i in t:
-                xs.append(int(self.width * i[0]))
-                ys.append(int(self.height * i[1]))
-
+        # 0- vs 1-based counting
+        t = [self.textures[i-1] for i in tIndices]
+        
+        # vt points are 0-1, so multiply by dimensions to get coords
+        for i in t:
+            xs.append(int(self.width * i[0]))
+            ys.append(int(self.height * i[1]))
         coords = [min(xs), min(ys), max(xs), max(ys)]
         return coords
 
@@ -106,8 +106,8 @@ class Texture:
         block = np.array([], dtype=np.uint8)
         scaleX = (coords[2] - coords[0]) / 16
         scaleY = (coords[3] - coords[1]) / 16
+        xs = np.around(scaleX * (np.arange(256) % 16))
+        ys = np.around(scaleY * (np.arange(256) // 16))
         for i in range(256):
-            x = np.around(scaleX * (i % 16))
-            y = np.around(scaleY * (i // 16))
-            block = np.append(block, self.pixels[(x, y)])
+            block = np.append(block, self.pixels[xs[i], ys[i]])
         return block

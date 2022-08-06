@@ -7,7 +7,6 @@ from ConvertBlocksToArray import BlocksArray
 class Convert:
     def compute(self, uSnap, texture, blockPixels, blockTypes):
         for i in tqdm(range(len(uSnap))):
-#        for i in range(700, 705):
             cube = uSnap[i]
             img = texture.getImage(cube)
 
