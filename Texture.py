@@ -106,8 +106,8 @@ class Texture:
         block = np.array([], dtype=np.uint8)
         scaleX = (coords[2] - coords[0]) / 16
         scaleY = (coords[3] - coords[1]) / 16
+        xs = np.around(scaleX * (np.arange(256) % 16))
+        ys = np.around(scaleY * (np.arange(256) // 16))
         for i in range(256):
-            x = np.around(scaleX * (i % 16))
-            y = np.around(scaleY * (i // 16))
-            block = np.append(block, self.pixels[(x, y)])
+            block = np.append(block, self.pixels[xs[i], ys[i]])
         return block
