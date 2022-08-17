@@ -9,6 +9,7 @@ from Convert import Convert
 from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
 from NBTMakerJava import NBTMakerJava
+from FillHoles import FillHoles
 
 start_time = time.time()
 
@@ -24,6 +25,10 @@ h = 16
 shape, snap, uSnap = snapVertices(model, h)
 
 print("Vertices snapped after: ", time.time() - start_time)
+
+holes = FillHoles(model)
+holes.blocksInFace(0)
+"""
 
 tex = Texture(model, shape, snap)
 
@@ -65,3 +70,4 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)
+"""
