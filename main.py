@@ -26,9 +26,9 @@ shape, snap, uSnap = snapVertices(model, h)
 
 print("Vertices snapped after: ", time.time() - start_time)
 
-holes = FillHoles(model)
-holes.blocksInFace(0)
-"""
+holes = FillHoles(model, h)
+# demo - takes 0.002 seconds per block so 38 seconds for big ben
+blocks = holes.blocksInFace(0)
 
 tex = Texture(model, shape, snap)
 
@@ -70,4 +70,3 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)
-"""
