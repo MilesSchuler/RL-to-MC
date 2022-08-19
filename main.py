@@ -24,15 +24,29 @@ h = 16
 
 shape, snap, uSnap = snapVertices(model, h)
 converter = FindBlocks(model, h)
-dict, blockCoords, shape = converter.convertModel()
+blockFaces, blockCoords, mins, shape = converter.convertModel()
 
-
-print("Vertices snapped after: ", time.time() - start_time)
 """
-print("Textures initialized after: ", time.time() - start_time)
+trying to find the different between blockCoords (new) and snap (old)
+kinda just trying random things because trying to check if elements are equal is weird in nunpy
+when spyder crashed
+result = blockCoords
+for i in range(len(snap)):
+    b = snap[i]
+    result = result[result != b]
 
-classes = Convert(model, uSnap, snap, shape, h)
+print(result)
+
+"""
+print("Vertices snapped after: ", time.time() - start_time)
+
+"""
+# print("Textures initialized after: ", time.time() - start_time)
+
+classes = Convert(model, blockFaces, blockCoords, mins, shape, h)
 blockTypes = classes.blocksList
+print(blockCoords[0])
+
 
 # print("Blocks classified after: ", time.time() - start_time)
 
@@ -44,7 +58,7 @@ blocks = np.array([])
 
 for i in range(n):
     blockType = blockTypes[i]
-    [x, y, z] = uSnap[i]
+    [x, y, z] = blockCoords[i]
 
     if rotate:
         block = Block(int(x), int(z), int(y), blockType)

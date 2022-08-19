@@ -5,7 +5,7 @@ import time
 
 class Texture:
 
-    def __init__(self, model, dict):
+    def __init__(self, model, dict, mins):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
@@ -13,6 +13,8 @@ class Texture:
         self.indexTable = self.reformat()
 
         self.dict = dict
+        
+        self.mins = mins
 
         materials = model.getMaterials()
 
@@ -44,16 +46,18 @@ class Texture:
         tIndices = np.split(tIndices, splitIndices)
         return tIndices
 
-    def getImage(self, blockCoords):
-        x = str(blockCoords[0])
-        y = str(blockCoords[1])
-        z = str(blockCoords[2])
-
-        tIndices = self.dict[x + " " + y + " " + z]
+    def getImage(self, block):
+        # dict was made before we new what the mins were so it is shifted
+        block += self.mins
+        x = str(block[0])
+        y = str(block[1])
+        z = str(block[2])
+        fIndices = self.dict[x + " " + y + " " + z]
         # get texture of the cube
-        coords = self.getTexture(tIndices)
+        coords = self.getTexture(fIndices)
         # stretch/shrink to 16x16 array
         coords = self.scale(coords)
+        block -= self.mins
         return coords
 
     # get all the faces that have vertices in a given cube, unused
@@ -63,7 +67,9 @@ class Texture:
         return faceIndices
 
     # get portion of texture file based on face indices
-    def getTexture(self, tIndices):
+    def getTexture(self, fIndices):
+        # get all the texture indices and put them into one array
+        tIndices = np.concatenate(self.faces[fIndices,:,1])
         xs = []
         ys = []
         # 0- vs 1-based counting

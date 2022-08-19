@@ -24,17 +24,17 @@ class FindBlocks:
                 inFace = block[3]
                 dict[x + " " + y + " " + z].append(inFace)
                 blockCoords.append(np.array([x, y, z]))
-        
-        #blockCoords = np.array([np.int_(np.char.split(coords)) for coords in self.dict.keys()])
+                
         blockCoords = np.unique(np.int_(np.array(blockCoords)), axis=0)
-
+        
+        
         mins = np.amin(blockCoords, axis=0)
         maxes = np.amax(blockCoords, axis=0)
-
+        
         blockCoords -= mins
 
         shape = np.int_(maxes - mins + np.array([1, 1, 1]))
-        return dict, blockCoords, shape
+        return dict, blockCoords, mins, shape
     
     def blocksInFace(self, fIndex):
         f = self.faces[fIndex]
