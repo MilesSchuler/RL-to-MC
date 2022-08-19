@@ -1,27 +1,18 @@
 from PIL import Image, ImageDraw
 import numpy as np
-import collections
 import time
 
 
 class Texture:
 
-    def __init__(self, model, shape, snap):
+    def __init__(self, model, dict):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
         # texture index table where indexTable[i] is the texture indices that go with vertex i
         self.indexTable = self.reformat()
 
-
-        self.dict = collections.defaultdict(list)
-        for i in range(len(snap)):
-
-            x = str(snap[i][0])
-            y = str(snap[i][1])
-            z = str(snap[i][2])
-            for index in self.indexTable[i]:
-                self.dict[x + " " + y + " " + z].append(index)
+        self.dict = dict
 
         materials = model.getMaterials()
 

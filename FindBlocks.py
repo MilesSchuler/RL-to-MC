@@ -1,5 +1,7 @@
 import numpy as np
 import collections
+from tqdm import tqdm
+
 
 class FindBlocks:
 
@@ -8,17 +10,24 @@ class FindBlocks:
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.height = height
-        self.dict = collections.defaultdict
-        for face in range(len(self.faces)):
-            block = self.blocksInFace(face)
-            x = str(block[0])
-            y = str(block[1])
-            z = str(block[2])
-            inFace = block[3]
-            self.dict[x + " " + y + " " + z].append(inFace)
         
-        blockCoords = dict.keys()
+
+    def convertModel(self):
+        dict = collections.defaultdict(list)
+        blockCoords = []
+        for faceIndex in tqdm(range(len(self.faces))):
+            blocks = self.blocksInFace(faceIndex)
+            for block in blocks:
+                x = str(block[0])
+                y = str(block[1])
+                z = str(block[2])
+                inFace = block[3]
+                dict[x + " " + y + " " + z].append(inFace)
+                blockCoords.append(np.array([x, y, z]))
         
+        #blockCoords = np.array([np.int_(np.char.split(coords)) for coords in self.dict.keys()])
+        blockCoords = np.unique(np.int_(np.array(blockCoords)), axis=0)
+
         mins = np.amin(blockCoords, axis=0)
         maxes = np.amax(blockCoords, axis=0)
 
@@ -26,8 +35,6 @@ class FindBlocks:
 
         shape = np.int_(maxes - mins + np.array([1, 1, 1]))
         return dict, blockCoords, shape
-
-    
     
     def blocksInFace(self, fIndex):
         f = self.faces[fIndex]
@@ -70,7 +77,8 @@ class FindBlocks:
                     # change to sqrt3 * scaleFactor / 2 if we want to get exact
                     cutoff = scaleFactor * np.sqrt(3) / 2
                     if distance < cutoff:
-                        blockList.append([block, fIndex])
+                        block = np.append(block, fIndex)
+                        blockList.append(block)
         return blockList
     
     def distToPlane(self, u, v, p, coords):

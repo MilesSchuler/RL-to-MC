@@ -9,7 +9,7 @@ from Convert import Convert
 from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
 from NBTMakerJava import NBTMakerJava
-from FillHoles import FillHoles
+from FindBlocks import FindBlocks
 
 start_time = time.time()
 
@@ -23,18 +23,15 @@ print("OBJ File read after: ", time.time() - start_time)
 h = 16
 
 shape, snap, uSnap = snapVertices(model, h)
+converter = FindBlocks(model, h)
+dict, blockCoords, shape = converter.convertModel()
+
 
 print("Vertices snapped after: ", time.time() - start_time)
-
-holes = FillHoles(model, h)
-# demo - takes 0.002 seconds per block so 38 seconds for big ben
-blocks = holes.blocksInFace(0)
-
-tex = Texture(model, shape, snap)
-
+"""
 print("Textures initialized after: ", time.time() - start_time)
 
-classes = Convert(uSnap, tex)
+classes = Convert(model, uSnap, snap, shape, h)
 blockTypes = classes.blocksList
 
 # print("Blocks classified after: ", time.time() - start_time)
@@ -70,3 +67,4 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)
+"""
