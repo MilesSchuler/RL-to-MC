@@ -13,9 +13,10 @@ from FindBlocks import FindBlocks
 
 start_time = time.time()
 
-name = 'BigBen'
+name = 'cube'
 # some obj files are sideways
-rotate = True
+rotate = False
+textured = False
 model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
@@ -26,27 +27,25 @@ shape, snap, uSnap = snapVertices(model, h)
 converter = FindBlocks(model, h)
 blockFaces, blockCoords, mins, shape = converter.convertModel()
 
-"""
-trying to find the different between blockCoords (new) and snap (old)
-kinda just trying random things because trying to check if elements are equal is weird in nunpy
-when spyder crashed
-result = blockCoords
-for i in range(len(snap)):
-    b = snap[i]
-    result = result[result != b]
 
+# find difference between usnap and blockcoords
+b = np.array([str(i)[1:-1] for i in blockCoords])
+a = np.array([str(i)[1:-1] for i in uSnap])
+
+result = np.setdiff1d(b, a)
+result = [i.split(" ") for i in result]
 print(result)
 
-"""
+
 print("Vertices snapped after: ", time.time() - start_time)
 
-"""
+
 # print("Textures initialized after: ", time.time() - start_time)
-
-classes = Convert(model, blockFaces, blockCoords, mins, shape, h)
-blockTypes = classes.blocksList
-print(blockCoords[0])
-
+if textured:
+    classes = Convert(model, blockFaces, blockCoords, mins, shape, h)
+    blockTypes = classes.blocksList
+else:
+    blockTypes = ['stone'] * len(blockCoords)
 
 # print("Blocks classified after: ", time.time() - start_time)
 
@@ -81,4 +80,4 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)
-"""
+
