@@ -13,10 +13,10 @@ from FindBlocks import FindBlocks
 
 start_time = time.time()
 
-name = 'cube'
+name = 'saul-goodman'
 # some obj files are sideways
 rotate = False
-textured = False
+textured = True
 model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
