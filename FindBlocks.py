@@ -27,14 +27,10 @@ class FindBlocks:
                 
         blockCoords = np.unique(np.int_(np.array(blockCoords)), axis=0)
         
-        
         mins = np.amin(blockCoords, axis=0)
-        maxes = np.amax(blockCoords, axis=0)
-        
         blockCoords -= mins
 
-        shape = np.int_(maxes - mins + np.array([1, 1, 1]))
-        return dict, blockCoords, mins, shape
+        return dict, blockCoords, mins
     
     def blocksInFace(self, fIndex):
         f = self.faces[fIndex]
@@ -74,8 +70,8 @@ class FindBlocks:
                     # we need to pass in a point on the plane, so we just use a vertex
                     # TODO in theory this could be done all at once using matrices instead of having to go through each block
                     distance = self.distToPlane(u, v, fVertices[0], coords)
-                    # change to sqrt3 * scaleFactor / 2 if we want to get exact
-                    cutoff = scaleFactor * np.sqrt(3) / 2
+                    # distance from center to corner is sqrt3 / 2
+                    cutoff = np.sqrt(3) * scaleFactor / 2
                     if distance < cutoff:
                         block = np.append(block, fIndex)
                         blockList.append(block)

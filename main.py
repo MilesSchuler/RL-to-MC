@@ -21,11 +21,11 @@ model = OBJ(name)
 
 print("OBJ File read after: ", time.time() - start_time)
 
-h = 24
+h = 16
 
 shape, snap, uSnap = snapVertices(model, h)
 converter = FindBlocks(model, h)
-blockFaces, blockCoords, mins, shape = converter.convertModel()
+blockFaces, blockCoords, mins = converter.convertModel()
 
 
 # find difference between usnap and blockcoords
@@ -34,7 +34,7 @@ a = np.array([str(i)[1:-1] for i in uSnap])
 
 result = np.setdiff1d(b, a)
 result = [i.split(" ") for i in result]
-print(result)
+# print(result)
 
 
 print("Vertices snapped after: ", time.time() - start_time)
