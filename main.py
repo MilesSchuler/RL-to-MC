@@ -13,9 +13,9 @@ from FindBlocks import FindBlocks
 
 start_time = time.time()
 
-name = 'saul-goodman'
+name = 'BigBen'
 # some obj files are sideways
-rotate = False
+rotate = True
 textured = True
 model = OBJ(name)
 

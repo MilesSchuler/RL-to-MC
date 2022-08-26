@@ -55,6 +55,8 @@ class Texture:
         fIndices = self.dict[x + " " + y + " " + z]
         # get texture of the cube
         coords = self.getTexture(fIndices)
+        
+        #self.drawBlob(fIndices)
         # stretch/shrink to 16x16 array
         coords = self.scale(coords)
         block -= self.mins
@@ -105,6 +107,7 @@ class Texture:
         scaleY = (coords[3] - coords[1]) / 16
         xs = np.around(scaleX * (np.arange(256) % 16))
         ys = np.around(scaleY * (np.arange(256) // 16))
+        # can be (r, g, b, a) but we only want rgb
         for i in range(256):
-            block = np.append(block, self.pixels[xs[i], ys[i]])
+            block = np.append(block, self.pixels[xs[i], ys[i]][:3])
         return block

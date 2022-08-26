@@ -1,10 +1,7 @@
 from tqdm import tqdm
-
 from EuclideanDistance import EuclideanDistance
 from ConvertBlocksToArray import BlocksArray
 from Texture import Texture
-import collections
-
 
 
 class Convert:
@@ -22,12 +19,11 @@ class Convert:
 
     def matchTextures(self, blockPixels, blockTypes, mins):
         tex = Texture(self.model, self.dict, mins)
+        ec = EuclideanDistance(blockPixels)
 
         for i in tqdm(range(len(self.blockCoords))):
             cube = self.blockCoords[i]
             img = tex.getImage(cube)
-        
-            ec = EuclideanDistance(blockPixels)
             neighborIndex = ec.find_closest_neighbor(img)
 
             blockName = blockTypes[neighborIndex]
