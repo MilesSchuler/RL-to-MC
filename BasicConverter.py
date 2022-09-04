@@ -21,12 +21,12 @@ def snapVertices(model, height):
     mins = np.amin(snap, axis=0)
     maxes = np.amax(snap, axis=0)
 
-    snap -= mins
+    #snap -= mins
 
     uSnap = np.unique(snap, axis=0)
 
     # add one to each element because the number of integers from m to n in n-m+1
     shape = np.int_(maxes - mins + np.array([1, 1, 1]))
 
-    return shape, snap, uSnap
+    return shape, snap, uSnap, mins, scaleFactor
         

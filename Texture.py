@@ -1,21 +1,29 @@
 from PIL import Image, ImageDraw
 import numpy as np
-import time
-
+import collections
 
 class Texture:
 
-    def __init__(self, model, dict, mins):
+    def __init__(self, model, snap, mins, blockLength):
         self.vertices = model.getVertices()
         self.textures = model.getTextures()
         self.faces = model.getFaces()
-        # texture index table where indexTable[i] is the texture indices that go with vertex i
-        self.indexTable = self.reformat()
-
-        self.dict = dict
-        
+        self.blockLength = blockLength
         self.mins = mins
-
+        # texture index table where indexTable[i] is the texture indices that go with vertex i
+        self.indexTable, self.bigFaces = self.reformat()
+        
+        self.dict = collections.defaultdict(list)
+        
+        # create dict with values from snap,
+        # this will have holes that we fill in later
+        for i in range(len(snap)):
+            x = str(snap[i][0])
+            y = str(snap[i][1])
+            z = str(snap[i][2])
+            for index in self.indexTable[i]:
+                self.dict[x + " " + y + " " + z].append(index)
+        
         materials = model.getMaterials()
 
         # assume there is only one material
@@ -31,6 +39,24 @@ class Texture:
         self.draw = ImageDraw.Draw(self.map)
 
     def reformat(self):
+        smallFaces = []
+        bigFaces = []
+        
+        # split the faces between small and big
+        for f in self.faces:
+            v = self.vertices[f[:,0] - 1]
+            x = abs(max(v[:,0]) - min(v[:,0]))
+            y = abs(max(v[:,1]) - min(v[:,1]))
+            z = abs(max(v[:,2]) - min(v[:,2]))
+            
+            # cutoff for small vs big face could be something else
+            if x > self.blockLength or y > self.blockLength or z > self.blockLength:
+                bigFaces.append(f)
+            else:
+                smallFaces.append(f)
+        
+        bigFaces = np.array(bigFaces)
+
         # don't need the normals
         newFaces = self.faces[:,:,0:2]
         # don't need to split it up by faces
@@ -44,22 +70,33 @@ class Texture:
         splitIndices = np.unique(vIndices, return_index=True)[1][1:]
         # split the texture indices based on the vertices they are assigned to for easy lookups later
         tIndices = np.split(tIndices, splitIndices)
-        return tIndices
+        return tIndices, bigFaces
 
     def getImage(self, block):
         # dict was made before we new what the mins were so it is shifted
-        block += self.mins
+        #block += self.mins
         x = str(block[0])
         y = str(block[1])
         z = str(block[2])
-        fIndices = self.dict[x + " " + y + " " + z]
-        # get texture of the cube
-        coords = self.getTexture(fIndices)
+        faceInfo = self.dict[x + " " + y + " " + z]
+        # faceInfo for big faces is [fIndex, lengthScale, [u, v]]
+        # for small faces, its a list of texture indices
+        # TODO there is a better way to do this for sure but I'm just checking whether its big or small
+        # by using these ifs to check if it is in this format
+        if len(faceInfo) == 3:
+            if type(faceInfo[2]) == list:
+                coords = self.getTextureBig(int(faceInfo[0]), faceInfo[1], faceInfo[2])
+                coords = self.scale(coords)
+                block -= self.mins
+                return coords
         
-        #self.drawBlob(fIndices)
+        # get texture of the cube
+        coords = self.getTexture(faceInfo)
+        
         # stretch/shrink to 16x16 array
         coords = self.scale(coords)
-        block -= self.mins
+    
+        #block -= self.mins
         return coords
 
     # get all the faces that have vertices in a given cube, unused
@@ -69,9 +106,9 @@ class Texture:
         return faceIndices
 
     # get portion of texture file based on face indices
-    def getTexture(self, fIndices):
+    def getTexture(self, tIndices):
         # get all the texture indices and put them into one array
-        tIndices = np.concatenate(self.faces[fIndices,:,1])
+        #tIndices = np.concatenate(self.faces[fIndices,:,1])
         xs = []
         ys = []
         # 0- vs 1-based counting
@@ -81,9 +118,30 @@ class Texture:
         for i in t:
             xs.append(int(self.width * i[0]))
             ys.append(int(self.height * i[1]))
-        coords = [min(xs), min(ys), max(xs), max(ys)]
-        return coords
-
+        corners = [min(xs), min(ys), max(xs), max(ys)]
+        return corners
+    
+    def getTextureBig(self, fIndex, lengthScale, faceCenter):
+        # TODO test/look over this section
+        # rn it is outputting coords that are all around 0 or really big ones
+        # it is the really big ones causing the error but the ones around 0 are also wrong
+        # get texture indices and shift to 0-based
+        face = self.faces[fIndex]
+        tIndices = face[:,0] - 1
+        # get texture coords for points in this face
+        fTextures = self.textures[tIndices]
+        # define direction vectors u and v on 2d texture map
+        u = fTextures[1] - fTextures[0]
+        v = fTextures[2] - fTextures[0]
+        # this is could be wrong i am very confused
+        # in theory it is saying, start at one corner and then go a certain amount in u direction and a certain amount v direction
+        p = fTextures[0] + faceCenter[0]*u + faceCenter[1]*v
+        # get size of face to calculate length, also not sure if this is correct
+        faceSize = max(fTextures[:,0]) - min(fTextures[:,1])
+        length = int(faceSize * lengthScale)
+        # get corners of square for scaling
+        corners = [p[0]-length/2, p[1]-length/2, p[0]+length/2, p[1]+length/2]
+        return corners
     # draw blob of where texture on block maps to on texture image, for testing
     def drawBlob(self, indices):
         for i in indices:
@@ -109,5 +167,11 @@ class Texture:
         ys = np.around(scaleY * (np.arange(256) // 16))
         # can be (r, g, b, a) but we only want rgb
         for i in range(256):
-            block = np.append(block, self.pixels[xs[i], ys[i]][:3])
+            try:
+                block = np.append(block, self.pixels[xs[i], ys[i]][:3])
+            except:
+                # not working right now, ignore error about "operands could not be broadcast together..."
+                # see TODO in getTextureBig
+                print(coords)
+                break
         return block

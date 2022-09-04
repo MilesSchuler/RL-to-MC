@@ -9,7 +9,7 @@ from Convert import Convert
 from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
 from NBTMakerJava import NBTMakerJava
-from FindBlocks import FindBlocks
+from FindBlocks import fillHoles
 
 start_time = time.time()
 
@@ -23,18 +23,13 @@ print("OBJ File read after: ", time.time() - start_time)
 
 h = 16
 
-shape, snap, uSnap = snapVertices(model, h)
-converter = FindBlocks(model, h)
-blockFaces, blockCoords, mins = converter.convertModel()
+shape, snap, uSnap, mins, blockLength = snapVertices(model, h)
 
+tex = Texture(model, snap, mins, blockLength)
+blockFaces, bigFaces = tex.dict, tex.bigFaces
+filler = fillHoles(model, bigFaces, blockFaces, snap, h)
 
-# find difference between usnap and blockcoords
-b = np.array([str(i)[1:-1] for i in blockCoords])
-a = np.array([str(i)[1:-1] for i in uSnap])
-
-result = np.setdiff1d(b, a)
-result = [i.split(" ") for i in result]
-# print(result)
+blockDict, blockCoords = filler.fillHoles()
 
 
 print("Vertices snapped after: ", time.time() - start_time)
@@ -42,7 +37,7 @@ print("Vertices snapped after: ", time.time() - start_time)
 
 # print("Textures initialized after: ", time.time() - start_time)
 if textured:
-    classes = Convert(model, blockFaces, blockCoords, mins, shape, h)
+    classes = Convert(model, blockFaces, blockCoords, mins, shape, h, tex)
     blockTypes = classes.blocksList
 else:
     blockTypes = ['stone'] * len(blockCoords)
@@ -57,7 +52,7 @@ blocks = np.array([])
 
 for i in range(n):
     blockType = blockTypes[i]
-    [x, y, z] = blockCoords[i]
+    [x, y, z] = blockCoords[i] - mins
 
     if rotate:
         block = Block(int(x), int(z), int(y), blockType)
@@ -80,4 +75,3 @@ creator2 = NBTMakerJava(blocks, shape)
 creator2.makeNBT(java_file)
 
 print("Total runtime: ", time.time() - start_time)
-
