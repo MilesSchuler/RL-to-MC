@@ -12,7 +12,7 @@ from NBTMakerJava import NBTMakerJava
 
 start_time = time.time()
 
-name = 'saul-goodman'
+name = 'bird'
 # some obj files are sideways
 rotate = True
 model = OBJ(name)
