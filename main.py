@@ -6,6 +6,7 @@ from ObjReader import OBJ
 from BasicConverter import snapVertices
 from Texture import Texture
 from Convert import Convert
+from Convert2 import Convert2
 from Block import Block
 from NBTMakerBedrock import NBTMakerBedrock
 from NBTMakerJava import NBTMakerJava
@@ -29,7 +30,8 @@ tex = Texture(model, shape, snap)
 
 print("Textures initialized after: ", time.time() - start_time)
 
-classes = Convert(uSnap, tex)
+classes = Convert2(model, snap, tex, h)
+#classes = Convert(uSnap, tex)
 blockTypes = classes.blocksList
 
 # print("Blocks classified after: ", time.time() - start_time)

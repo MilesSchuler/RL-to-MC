@@ -1,8 +1,12 @@
 from ObjReader import OBJ
 from PIL import Image, ImageDraw
+import numpy as np
 
-name = 'bird'
+name = 'mountain'
 model = OBJ(name)
+
+
+coords = [1, 1, 1]
 
 
 vertices = model.getVertices()
@@ -19,9 +23,15 @@ textmap = Image.open(mapPath)
 pixels = textmap.load()
 width, height = textmap.size
 
-"""
-LOTS OF FUN STUFF
-"""
 
+# testing on first face
+vert_indices = faces[0, :, 0]
+text_indices = faces[0, :, 1]
 
+v_points = vertices[vert_indices - 1].T
+t_points = np.append(textures[text_indices - 1].T, [[0, 0, 0]], axis=0)
+
+v_inv = np.linalg.inv(v_points)
+
+R = np.matmul(t_points, v_inv)
 
