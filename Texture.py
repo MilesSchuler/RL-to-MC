@@ -31,7 +31,7 @@ class Texture:
         mapName = mtl['map_Kd'].split("\\")[-1]
         mapPath = "./Data/" + model.getName() + "/" + mapName
         #mapPath = "new.jpg"
-        self.map = Image.open(mapPath)
+        self.map = Image.open(mapPath).convert("RGBA")
         self.pixels = self.map.load()
         self.width, self.height = self.map.size
         
@@ -109,5 +109,24 @@ class Texture:
         xs = np.around(scaleX * (np.arange(256) % 16))
         ys = np.around(scaleY * (np.arange(256) // 16))
         for i in range(256):
-            block = np.append(block, self.pixels[xs[i], ys[i]])
+            pixel = self.pixels[int(xs[i]), int(ys[i])]
+            if len(pixel) == 4 and pixel[3] == 0:
+                pixel = self.findOpaquePixel(int(xs[i]), int(ys[i]))
+            block = np.append(block, pixel[:3])
         return block
+
+    def findOpaquePixel(self, x, y):
+        maxRadius = max(self.width, self.height)
+        for radius in range(1, maxRadius + 1):
+            minX = max(0, x - radius)
+            maxX = min(self.width - 1, x + radius)
+            minY = max(0, y - radius)
+            maxY = min(self.height - 1, y + radius)
+
+            for candidateY in range(minY, maxY + 1):
+                for candidateX in range(minX, maxX + 1):
+                    pixel = self.pixels[candidateX, candidateY]
+                    if len(pixel) < 4 or pixel[3] > 0:
+                        return pixel[:3]
+
+        return self.pixels[x, y][:3]
