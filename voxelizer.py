@@ -30,7 +30,7 @@ class SourceVoxelizer:
         self.max_bounds = vertices.max(axis=0)
         self.scale_factor = (self.max_bounds[1] - self.min_bounds[1]) / target_height
 
-        self.texture = Image.open(model.texture_path).convert("RGB")
+        self.texture = Image.open(model.texture_path).convert("RGBA")
         self.texture_pixels = self.texture.load()
         self.texture_width, self.texture_height = self.texture.size
 
@@ -64,7 +64,26 @@ class SourceVoxelizer:
         v = float(uv[1])
         x = int(np.clip(u * (self.texture_width - 1), 0, self.texture_width - 1))
         y = int(np.clip((1.0 - v) * (self.texture_height - 1), 0, self.texture_height - 1))
-        return np.asarray(self.texture_pixels[x, y], dtype=float)
+        pixel = self.texture_pixels[x, y]
+        if len(pixel) == 4 and pixel[3] == 0:
+            pixel = self._find_opaque_pixel(x, y)
+        return np.asarray(pixel[:3], dtype=float)
+
+    def _find_opaque_pixel(self, x: int, y: int):
+        max_radius = max(self.texture_width, self.texture_height)
+        for radius in range(1, max_radius + 1):
+            min_x = max(0, x - radius)
+            max_x = min(self.texture_width - 1, x + radius)
+            min_y = max(0, y - radius)
+            max_y = min(self.texture_height - 1, y + radius)
+
+            for candidate_y in range(min_y, max_y + 1):
+                for candidate_x in range(min_x, max_x + 1):
+                    pixel = self.texture_pixels[candidate_x, candidate_y]
+                    if len(pixel) < 4 or pixel[3] > 0:
+                        return pixel
+
+        return self.texture_pixels[x, y]
 
     def _add_sample(self, observations, cell, sub, color):
         if cell not in observations:

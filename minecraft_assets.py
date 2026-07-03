@@ -39,9 +39,13 @@ class MinecraftAssets:
         self.root = Path(root)
         self.blockstates = self.root / "blockstates"
         self.models = self.root / "models" / "block"
-        self.textures = self.root / "textures" / "block"
+        self.textures = self.root / "textures"
+        self.blacklist_path = self.root.parent / "block_blacklist.json"
 
     def load_variants(self, block_name: str) -> list[BlockVariant]:
+        if self._is_blacklisted(block_name):
+            return []
+
         blockstate_path = self.blockstates / f"{block_name}.json"
         if not blockstate_path.exists():
             return []
@@ -77,8 +81,13 @@ class MinecraftAssets:
     def all_variants(self) -> list[BlockVariant]:
         variants: list[BlockVariant] = []
         for path in sorted(self.blockstates.glob("*.json")):
+            if self._is_blacklisted(path.stem):
+                continue
             variants.extend(self.load_variants(path.stem))
         return variants
+
+    def _is_blacklisted(self, block_name: str) -> bool:
+        return block_name in _load_blacklist(self.blacklist_path)
 
     def resolve_model(self, model_ref: str) -> ResolvedModel:
         return self._resolve_model_cached(model_ref)
@@ -130,10 +139,14 @@ class MinecraftAssets:
             for texture_ref in _resolved_texture_refs(resolved.textures):
                 image_path = self._texture_path(texture_ref)
                 if image_path.exists():
-                    image = Image.open(image_path).convert("RGB")
+                    image = Image.open(image_path).convert("RGBA")
                     pixels = np.asarray(image, dtype=float)
-                    colors.append(pixels.mean(axis=(0, 1)))
-                    variances.append(pixels.var(axis=(0, 1)))
+                    alpha = pixels[:, :, 3]
+                    visible = alpha > 0
+                    if visible.any():
+                        visible_pixels = pixels[visible][:, :3]
+                        colors.append(visible_pixels.mean(axis=0))
+                        variances.append(visible_pixels.var(axis=0))
         if not colors:
             return np.array([255.0, 255.0, 255.0, 0.0, 0.0, 0.0], dtype=float)
         mean_color = np.mean(np.asarray(colors, dtype=float), axis=0)
@@ -194,6 +207,18 @@ def _load_json(path: Path) -> dict[str, Any]:
         return json.load(file)
 
 
+@lru_cache(maxsize=None)
+def _load_blacklist(path: Path) -> frozenset[str]:
+    if not path.exists():
+        return frozenset()
+
+    with path.open("r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    names = data.get("exact_names", [])
+    return frozenset(str(name) for name in names)
+
+
 def _parse_state_key(key: str) -> tuple[tuple[str, str], ...]:
     if not key:
         return tuple()
@@ -232,8 +257,7 @@ def _parse_applied_model(item: dict[str, Any]) -> AppliedModel:
 
 def _normalize_texture_ref(texture_ref: str) -> str:
     normalized = texture_ref.replace("minecraft:", "")
-    normalized = normalized.replace("block/", "") if normalized.startswith("block/") else normalized
-    if not normalized.startswith("block/"):
+    if "/" not in normalized:
         normalized = f"block/{normalized}"
     return normalized
 

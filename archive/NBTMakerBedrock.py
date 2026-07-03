@@ -1,7 +1,7 @@
 # pip install nbt
 from nbtlib import *
 import numpy as np
-from JavaToBedrock import JavaToBedrock
+from archive.JavaToBedrock import JavaToBedrock
 
 
 class NBTMakerBedrock:

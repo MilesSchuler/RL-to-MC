@@ -3,14 +3,14 @@ import time
 
 import numpy as np
 
-from BasicConverter import snapVertices
-from Block import Block
-from ConvertBlocksToArray import BlocksArray
-from EuclideanDistance import EuclideanDistance
-from NBTMakerBedrock import NBTMakerBedrock
-from NBTMakerJava import NBTMakerJava
-from ObjReader import OBJ
-from Texture import Texture
+from archive.BasicConverter import snapVertices
+from archive.Block import Block
+from archive.ConvertBlocksToArray import BlocksArray
+from archive.EuclideanDistance import EuclideanDistance
+from archive.NBTMakerBedrock import NBTMakerBedrock
+from archive.NBTMakerJava import NBTMakerJava
+from archive.ObjReader import OBJ
+from archive.Texture import Texture
 
 
 OPAQUE_FALLBACK_BLOCK = "white_concrete"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import time
 import sys
 from pathlib import Path
 
@@ -142,9 +143,34 @@ def _resize_mask(mask: np.ndarray, shape: tuple[int, int, int]) -> np.ndarray:
 
 
 def _print_progress(label: str, current: int, total: int) -> None:
+    starts = getattr(_print_progress, "_starts", None)
+    if starts is None:
+        starts = {}
+        setattr(_print_progress, "_starts", starts)
+
+    start_time = starts.setdefault(label, time.perf_counter())
+
     width = 24
     ratio = current / max(1, total)
     filled = int(width * ratio)
     bar = "#" * filled + "-" * (width - filled)
-    sys.stdout.write(f"\r{label}: [{bar}] {current}/{total}")
+
+    elapsed = time.perf_counter() - start_time
+    if current > 0:
+        estimated_total = elapsed / current * total
+        remaining = max(0.0, estimated_total - elapsed)
+        eta_text = f" eta { _format_duration(remaining) }"
+    else:
+        eta_text = " eta --:--"
+
+    sys.stdout.write(f"\r{label}: [{bar}] {current}/{total}{eta_text}")
     sys.stdout.flush()
+
+
+def _format_duration(seconds: float) -> str:
+    total_seconds = max(0, int(round(seconds)))
+    minutes, remaining_seconds = divmod(total_seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        return f"{hours:d}:{minutes:02d}:{remaining_seconds:02d}"
+    return f"{minutes:d}:{remaining_seconds:02d}"

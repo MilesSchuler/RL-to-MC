@@ -1,4 +1,4 @@
-from ObjReader import OBJ
+from archive.ObjReader import OBJ
 from PIL import Image, ImageDraw
 import numpy as np
 

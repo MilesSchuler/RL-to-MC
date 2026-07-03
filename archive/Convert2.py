@@ -1,7 +1,7 @@
 from tqdm import tqdm
 
-from EuclideanDistance import EuclideanDistance
-from ConvertBlocksToArray import BlocksArray
+from archive.EuclideanDistance import EuclideanDistance
+from archive.ConvertBlocksToArray import BlocksArray
 import numpy as np
 
 
